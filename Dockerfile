@@ -22,3 +22,8 @@ RUN source '/root/.bashrc' \
     && cargo install --target x86_64-unknown-linux-musl b3sum \
     && strip '/root/.cargo/bin/b3sum'; \
     rm -rf "/root/.cargo/registry" || exit 0
+
+FROM scratch AS rust-collection
+# date +%s
+# ARG cachebust='1603527789'
+COPY --from=b3sum /root/.cargo/bin/b3sum /root/go/bin/b3sum
