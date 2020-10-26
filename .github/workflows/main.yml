@@ -1,0 +1,66 @@
+name: Bump
+
+on:
+  schedule:
+    - cron: "5 1-23/8 * * *"
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "**/LICENSE"
+      - "**/README.md"
+  # pull_request:
+  #   branches:
+  #     - master
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "Bump"
+  Bump:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set some variables
+        run: |
+          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "REPO_URL=github.com/${{ github.repository }}" >> $GITHUB_ENV
+          echo "checksec_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/slimm609/checksec.sh/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "bashrc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "b3sum_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest' |
+                grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "cachebust=$(date +%s)" >> $GITHUB_ENV
+        shell: bash
+      # Runs a set of commands using the runners shell
+      - name: Bump
+        run: |
+          git config --local user.name "actions"
+          git config --local user.email "action@github.com"
+          git reset --hard origin/master
+          sed -i -E "s/^ARG checksec_latest_commit_hash=.+/ARG checksec_latest_commit_hash=${checksec_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG b3sum_latest_tag_name=.+/ARG b3sum_latest_tag_name=${b3sum_latest_tag_name:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
+          git add Dockerfile
+          git commit -m "Bump"
+          git push -u origin master
+      - name: Force push `release` branch
+        run: |
+          git config --local user.name "actions"
+          git config --local user.email "action@github.com"
+          git checkout release
+          git reset --hard origin/master
+          git rm -r .github
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git push -f -u origin release
