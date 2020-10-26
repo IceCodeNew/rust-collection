@@ -1,6 +1,8 @@
 FROM alpine:edge AS rust-base
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+# https://api.github.com/repos/slimm609/checksec.sh/commits?per_page=1
 ARG checksec_latest_commit_hash='f3e56af80f7b24ebfdde5679b4a862d739636b11'
+# https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc
 ARG bashrc_latest_commit_hash='dffed49d1d1472f1b22b3736a5c191d74213efaa'
 RUN apk update; apk --no-progress --no-cache add \
     apk-tools bash binutils build-base ca-certificates coreutils curl dos2unix dpkg file gettext-tiny-dev grep libarchive-tools libedit-dev libedit-static lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl pkgconf rustup; \
@@ -16,7 +18,7 @@ RUN apk update; apk --no-progress --no-cache add \
 FROM rust-base AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest
-ARG github_release_latest_tag_name='0.3.7'
+ARG b3sum_latest_tag_name='0.3.7'
 RUN source '/root/.bashrc' \
     && source '/root/.cargo/env' \
     && cargo install --target x86_64-unknown-linux-musl b3sum \
@@ -25,5 +27,5 @@ RUN source '/root/.bashrc' \
 
 FROM scratch AS rust-collection
 # date +%s
-# ARG cachebust='1603527789'
+ARG cachebust='1603527789'
 COPY --from=b3sum /root/.cargo/bin/b3sum /root/go/bin/b3sum
