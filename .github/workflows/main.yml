@@ -40,6 +40,9 @@ jobs:
           echo "b3sum_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "rust_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/rust-lang/rust/releases/latest' |
+                grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "cachebust=$(date +%s)" >> $GITHUB_ENV
         shell: bash
       # Runs a set of commands using the runners shell
@@ -51,6 +54,7 @@ jobs:
           sed -i -E "s/^ARG checksec_latest_tag_name=.+/ARG checksec_latest_tag_name=${checksec_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG b3sum_latest_tag_name=.+/ARG b3sum_latest_tag_name=${b3sum_latest_tag_name:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG rust_latest_tag_name=.+/ARG rust_latest_tag_name=${rust_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
           git add Dockerfile
           git commit -m "Bump"
