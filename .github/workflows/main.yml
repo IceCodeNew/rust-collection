@@ -1,6 +1,7 @@
 name: Bump
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "5 1-23/8 * * *"
   push:
@@ -9,9 +10,9 @@ on:
     paths-ignore:
       - "**/LICENSE"
       - "**/README.md"
-  # pull_request:
-  #   branches:
-  #     - master
+  pull_request:
+    branches:
+      - master
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
