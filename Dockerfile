@@ -27,7 +27,51 @@ RUN source '/root/.bashrc' \
     && strip '/root/.cargo/bin/b3sum'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
+FROM rust-base AS fd
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/sharkdp/fd/releases/latest
+ARG fd_latest_tag_name='v8.1.1'
+RUN source '/root/.bashrc' \
+    && source '/root/.cargo/env' \
+    && cargo install --target x86_64-unknown-linux-musl fd-find \
+    && strip '/root/.cargo/bin/fd'; \
+    rm -rf "/root/.cargo/registry" || exit 0
+
+FROM rust-base AS bat
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/sharkdp/bat/releases/latest
+ARG bat_latest_tag_name='v0.16.0'
+RUN source '/root/.bashrc' \
+    && source '/root/.cargo/env' \
+    && cargo install --target x86_64-unknown-linux-musl --locked bat \
+    && strip '/root/.cargo/bin/bat'; \
+    rm -rf "/root/.cargo/registry" || exit 0
+
+FROM rust-base AS hexyl
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/sharkdp/hexyl/releases/latest
+ARG hexyl_latest_tag_name='v0.8.0'
+RUN source '/root/.bashrc' \
+    && source '/root/.cargo/env' \
+    && cargo install --target x86_64-unknown-linux-musl hexyl \
+    && strip '/root/.cargo/bin/hexyl'; \
+    rm -rf "/root/.cargo/registry" || exit 0
+
+FROM rust-base AS hyperfine
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/sharkdp/hyperfine/releases/latest
+ARG hyperfine_latest_tag_name='v1.11.0'
+RUN source '/root/.bashrc' \
+    && source '/root/.cargo/env' \
+    && cargo install --target x86_64-unknown-linux-musl hyperfine \
+    && strip '/root/.cargo/bin/hyperfine'; \
+    rm -rf "/root/.cargo/registry" || exit 0
+
 FROM scratch AS rust-collection
 # date +%s
 ARG cachebust='1603527789'
 COPY --from=b3sum /root/.cargo/bin/b3sum /root/go/bin/b3sum
+COPY --from=fd /root/.cargo/bin/fd /root/go/bin/fd
+COPY --from=bat /root/.cargo/bin/bat /root/go/bin/bat
+COPY --from=hexyl /root/.cargo/bin/hexyl /root/go/bin/hexyl
+COPY --from=hyperfine /root/.cargo/bin/hyperfine /root/go/bin/hyperfine
