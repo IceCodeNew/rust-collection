@@ -3,7 +3,7 @@ name: Bump
 on:
   workflow_dispatch:
   schedule:
-    - cron: "5 1-23/8 * * *"
+    - cron: "25 0-23/8 * * *"
   push:
     branches:
       - master
