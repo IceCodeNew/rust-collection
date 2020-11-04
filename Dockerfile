@@ -67,6 +67,16 @@ RUN source '/root/.bashrc' \
     && strip '/root/.cargo/bin/hyperfine'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
+FROM rust-base AS boringtun
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
+ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
+RUN source '/root/.bashrc' \
+    && source '/root/.cargo/env' \
+    && cargo install --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' \
+    && strip '/root/.cargo/bin/boringtun'; \
+    rm -rf "/root/.cargo/registry" || exit 0
+
 FROM scratch AS rust-collection
 # date +%s
 ARG cachebust='1603527789'
@@ -75,3 +85,4 @@ COPY --from=fd /root/.cargo/bin/fd /root/go/bin/fd
 COPY --from=bat /root/.cargo/bin/bat /root/go/bin/bat
 COPY --from=hexyl /root/.cargo/bin/hexyl /root/go/bin/hexyl
 COPY --from=hyperfine /root/.cargo/bin/hyperfine /root/go/bin/hyperfine
+COPY --from=boringtun /root/.cargo/bin/boringtun /root/go/bin/boringtun
