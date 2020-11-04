@@ -23,7 +23,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG b3sum_latest_tag_name='0.3.7'
 RUN source '/root/.bashrc' \
     && source '/root/.cargo/env' \
-    && cargo install --target x86_64-unknown-linux-musl b3sum \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl b3sum \
     && strip '/root/.cargo/bin/b3sum'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
@@ -33,7 +33,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG fd_latest_tag_name='v8.1.1'
 RUN source '/root/.bashrc' \
     && source '/root/.cargo/env' \
-    && cargo install --target x86_64-unknown-linux-musl fd-find \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl fd-find \
     && strip '/root/.cargo/bin/fd'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
@@ -43,7 +43,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG bat_latest_tag_name='v0.16.0'
 RUN source '/root/.bashrc' \
     && source '/root/.cargo/env' \
-    && cargo install --target x86_64-unknown-linux-musl --locked bat \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --locked bat \
     && strip '/root/.cargo/bin/bat'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
@@ -53,7 +53,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG hexyl_latest_tag_name='v0.8.0'
 RUN source '/root/.bashrc' \
     && source '/root/.cargo/env' \
-    && cargo install --target x86_64-unknown-linux-musl hexyl \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hexyl \
     && strip '/root/.cargo/bin/hexyl'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
@@ -63,7 +63,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG hyperfine_latest_tag_name='v1.11.0'
 RUN source '/root/.bashrc' \
     && source '/root/.cargo/env' \
-    && cargo install --target x86_64-unknown-linux-musl hyperfine \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hyperfine \
     && strip '/root/.cargo/bin/hyperfine'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
@@ -73,7 +73,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
 RUN source '/root/.bashrc' \
     && source '/root/.cargo/env' \
-    && cargo install --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' \
     && strip '/root/.cargo/bin/boringtun'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
