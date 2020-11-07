@@ -67,6 +67,16 @@ RUN source '/root/.bashrc' \
     && strip '/root/.cargo/bin/hyperfine'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
+FROM rust-base AS fnm
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/Schniz/fnm/releases/latest
+ARG fnm_latest_tag_name='v1.22.6'
+RUN source '/root/.bashrc' \
+    && source '/root/.cargo/env' \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" \
+    && strip '/root/.cargo/bin/fnm'; \
+    rm -rf "/root/.cargo/registry" || exit 0
+
 FROM rust-base AS boringtun
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
@@ -85,4 +95,5 @@ COPY --from=fd /root/.cargo/bin/fd /root/go/bin/fd
 COPY --from=bat /root/.cargo/bin/bat /root/go/bin/bat
 COPY --from=hexyl /root/.cargo/bin/hexyl /root/go/bin/hexyl
 COPY --from=hyperfine /root/.cargo/bin/hyperfine /root/go/bin/hyperfine
+COPY --from=fnm /root/.cargo/bin/fnm /root/go/bin/fnm
 COPY --from=boringtun /root/.cargo/bin/boringtun /root/go/bin/boringtun
