@@ -91,10 +91,10 @@ RUN source '/root/.bashrc' \
 FROM scratch AS rust-collection
 # date +%s
 ARG cachebust='1603527789'
-COPY --from=b3sum /root/.cargo/bin/b3sum /root/go/bin/b3sum
-COPY --from=fd /root/.cargo/bin/fd /root/go/bin/fd
-COPY --from=bat /root/.cargo/bin/bat /root/go/bin/bat
-COPY --from=hexyl /root/.cargo/bin/hexyl /root/go/bin/hexyl
-COPY --from=hyperfine /root/.cargo/bin/hyperfine /root/go/bin/hyperfine
-COPY --from=fnm /root/.cargo/bin/fnm /root/go/bin/fnm
-COPY --from=boringtun /root/.cargo/bin/boringtun /root/go/bin/boringtun
+COPY --from=b3sum /root/.cargo/bin /root/.cargo/bin/
+COPY --from=fd /root/.cargo/bin /root/.cargo/bin/
+COPY --from=bat /root/.cargo/bin /root/.cargo/bin/
+COPY --from=hexyl /root/.cargo/bin /root/.cargo/bin/
+COPY --from=hyperfine /root/.cargo/bin /root/.cargo/bin/
+COPY --from=fnm /root/.cargo/bin /root/.cargo/bin/
+COPY --from=boringtun /root/.cargo/bin /root/.cargo/bin/
