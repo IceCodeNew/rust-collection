@@ -6,6 +6,7 @@ ARG checksec_latest_tag_name='2.4.0'
 ARG bashrc_latest_commit_hash='dffed49d1d1472f1b22b3736a5c191d74213efaa'
 # https://api.github.com/repos/rust-lang/rust/releases/latest
 ARG rust_latest_tag_name='1.47.0'
+ENV PKG_CONFIG_ALL_STATIC=true
 RUN apk update; apk --no-progress --no-cache add \
     apk-tools bash binutils build-base ca-certificates coreutils curl dos2unix dpkg file gettext-tiny-dev grep libarchive-tools libedit-dev libedit-static lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl pkgconf rustup; \
     apk --no-progress --no-cache upgrade; \
