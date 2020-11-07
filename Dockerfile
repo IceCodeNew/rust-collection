@@ -88,9 +88,12 @@ RUN source '/root/.bashrc' \
     && strip '/root/.cargo/bin/boringtun'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
-FROM scratch AS rust-collection
+FROM alpine:edge AS collection
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # date +%s
 ARG cachebust='1603527789'
+ARG TZ='Asia/Taipei'
+ENV DEFAULT_TZ ${TZ}
 COPY --from=b3sum /root/.cargo/bin /root/.cargo/bin/
 COPY --from=fd /root/.cargo/bin /root/.cargo/bin/
 COPY --from=bat /root/.cargo/bin /root/.cargo/bin/
@@ -98,3 +101,8 @@ COPY --from=hexyl /root/.cargo/bin /root/.cargo/bin/
 COPY --from=hyperfine /root/.cargo/bin /root/.cargo/bin/
 COPY --from=fnm /root/.cargo/bin /root/.cargo/bin/
 COPY --from=boringtun /root/.cargo/bin /root/.cargo/bin/
+RUN apk update; apk --no-progress --no-cache add \
+    bash coreutils curl tzdata; \
+    apk --no-progress --no-cache upgrade; \
+    rm -rf /var/cache/apk/*; \
+    cp -f /usr/share/zoneinfo/${DEFAULT_TZ} /etc/localtime

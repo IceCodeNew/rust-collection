@@ -10,6 +10,7 @@ on:
     paths-ignore:
       - "**/LICENSE"
       - "**/README.md"
+      - "**/got_github_release.sh"
   pull_request:
     branches:
       - master
@@ -90,6 +91,8 @@ jobs:
           git config --local user.email "action@github.com"
           git checkout release
           git reset --hard origin/master
+          git rm got_github_release.sh
+          git rm release.Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
           git push -f -u origin release
