@@ -1,4 +1,4 @@
-FROM alpine:edge AS rust-base
+FROM quay.io/icecodenew/alpine:edge AS rust-base
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # https://api.github.com/repos/slimm609/checksec.sh/releases/latest
 ARG checksec_latest_tag_name='2.4.0'
@@ -88,7 +88,7 @@ RUN source '/root/.bashrc' \
     && strip '/root/.cargo/bin/boringtun'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
-FROM alpine:edge AS collection
+FROM quay.io/icecodenew/alpine:edge AS collection
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # date +%s
 ARG cachebust='1603527789'
