@@ -52,5 +52,11 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
+    --name "checksec" \
+    --file "/root/.cargo/bin/checksec"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
     --name "boringtun" \
     --file "/root/.cargo/bin/boringtun"

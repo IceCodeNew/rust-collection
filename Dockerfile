@@ -78,6 +78,16 @@ RUN source '/root/.bashrc' \
     && strip '/root/.cargo/bin/fnm'; \
     rm -rf "/root/.cargo/registry" || exit 0
 
+FROM rust-base AS checksec
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/etke/checksec.rs/releases/latest
+ARG checksec_latest_tag_name='v0.0.8'
+RUN source '/root/.bashrc' \
+    && source '/root/.cargo/env' \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl checksec \
+    && strip '/root/.cargo/bin/checksec'; \
+    rm -rf "/root/.cargo/registry" || exit 0
+
 FROM rust-base AS boringtun
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
@@ -100,6 +110,7 @@ COPY --from=bat /root/.cargo/bin /root/.cargo/bin/
 COPY --from=hexyl /root/.cargo/bin /root/.cargo/bin/
 COPY --from=hyperfine /root/.cargo/bin /root/.cargo/bin/
 COPY --from=fnm /root/.cargo/bin /root/.cargo/bin/
+COPY --from=checksec /root/.cargo/bin /root/.cargo/bin/
 COPY --from=boringtun /root/.cargo/bin /root/.cargo/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash coreutils curl tzdata; \
