@@ -33,7 +33,7 @@ jobs:
           echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "REPO_URL=github.com/${{ github.repository }}" >> $GITHUB_ENV
-          echo "checksec_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+          echo "checksec_sh_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/slimm609/checksec.sh/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "bashrc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
@@ -57,7 +57,7 @@ jobs:
           echo "fnm_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/Schniz/fnm/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "checksec_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+          echo "checksec_rs_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/etke/checksec.rs/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "boringtun_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
@@ -74,7 +74,7 @@ jobs:
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
           git reset --hard origin/master
-          sed -i -E "s/^ARG checksec_latest_tag_name=.+/ARG checksec_latest_tag_name=${checksec_latest_tag_name:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG checksec_sh_latest_tag_name=.+/ARG checksec_sh_latest_tag_name=${checksec_sh_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG b3sum_latest_tag_name=.+/ARG b3sum_latest_tag_name=${b3sum_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG fd_latest_tag_name=.+/ARG fd_latest_tag_name=${fd_latest_tag_name:?empty value}/" Dockerfile
@@ -82,7 +82,7 @@ jobs:
           sed -i -E "s/^ARG hexyl_latest_tag_name=.+/ARG hexyl_latest_tag_name=${hexyl_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG hyperfine_latest_tag_name=.+/ARG hyperfine_latest_tag_name=${hyperfine_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG fnm_latest_tag_name=.+/ARG fnm_latest_tag_name=${fnm_latest_tag_name:?empty value}/" Dockerfile
-          sed -i -E "s/^ARG checksec_latest_tag_name=.+/ARG checksec_latest_tag_name=${checksec_latest_tag_name:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG checksec_rs_latest_tag_name=.+/ARG checksec_rs_latest_tag_name=${checksec_rs_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG boringtun_latest_commit_hash=.+/ARG boringtun_latest_commit_hash=${boringtun_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG rust_latest_tag_name=.+/ARG rust_latest_tag_name=${rust_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
