@@ -16,7 +16,7 @@ RUN apk update; apk --no-progress --no-cache add \
     curl -sSL4q --retry 5 --retry-delay 10 --retry-max-time 60 -o '/usr/bin/checksec' "https://raw.githubusercontent.com/slimm609/checksec.sh/${checksec_sh_latest_tag_name}/checksec"; \
     chmod +x '/usr/bin/checksec'; \
     curl -sSL4q --retry 5 --retry-delay 10 --retry-max-time 60 -o '/root/.bashrc' "https://raw.githubusercontent.com/IceCodeNew/myrc/${bashrc_latest_commit_hash}/.bashrc"; \
-    rustup-init -y -t x86_64-unknown-linux-musl
+    rustup-init -y -t x86_64-unknown-linux-musl --default-host x86_64-unknown-linux-musl --profile minimal
 
 FROM rust-base AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
