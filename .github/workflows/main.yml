@@ -67,6 +67,7 @@ jobs:
                 'https://api.github.com/repos/rust-lang/rust/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "cachebust=$(date +%s)" >> $GITHUB_ENV
+          echo "rust_nightly_date=$(TZ=':Asia/Taipei' date +%F)" >> $GITHUB_ENV
         shell: bash
       # Runs a set of commands using the runners shell
       - name: Bump
@@ -86,6 +87,7 @@ jobs:
           sed -i -E "s/^ARG boringtun_latest_commit_hash=.+/ARG boringtun_latest_commit_hash=${boringtun_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG rust_latest_tag_name=.+/ARG rust_latest_tag_name=${rust_latest_tag_name:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG rust_nightly_date=.+/ARG rust_nightly_date=${rust_nightly_date:?empty value}/" build_base.Dockerfile
           git add Dockerfile build_base.Dockerfile
           git commit -m "Bump"
           git push -u origin master

@@ -4,8 +4,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG checksec_sh_latest_tag_name=2.4.0
 # https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc
 ARG bashrc_latest_commit_hash=dffed49d1d1472f1b22b3736a5c191d74213efaa
-# https://api.github.com/repos/rust-lang/rust/releases/latest
-ARG rust_latest_tag_name=1.47.0
+ARG rust_nightly_date='2020-11-26'
 ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 ENV PKG_CONFIG_ALL_STATIC=true
