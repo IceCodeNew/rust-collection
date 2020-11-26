@@ -9,7 +9,7 @@ ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 ENV PKG_CONFIG_ALL_STATIC=true
 RUN apk update; apk --no-progress --no-cache add \
-    apk-tools bash binutils build-base ca-certificates coreutils curl dos2unix dpkg file gettext-tiny-dev grep libarchive-tools libedit-dev libedit-static lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl pkgconf rustup; \
+    apk-tools bash binutils build-base ca-certificates cmake coreutils curl dos2unix dpkg file gettext-tiny-dev grep libarchive-tools libedit-dev libedit-static lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl pkgconf rustup samurai; \
     apk --no-progress --no-cache upgrade; \
     rm -rf /var/cache/apk/*; \
     update-alternatives --install /usr/local/bin/ld ld /usr/bin/lld 100; \
