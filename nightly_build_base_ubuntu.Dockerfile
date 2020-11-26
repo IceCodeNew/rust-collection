@@ -54,6 +54,6 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && ./rustup-init -y -c rust-src -t x86_64-unknown-linux-gnu x86_64-pc-windows-gnu --default-host x86_64-unknown-linux-gnu --profile minimal --default-toolchain nightly --no-modify-path \
     && rm rustup-init \
     && chmod -R a+w $RUSTUP_HOME $CARGO_HOME \
-    && source /root/.cargo/env \
+    && source /usr/local/cargo/env \
     && cargo install xargo \
     && cargo install cross
