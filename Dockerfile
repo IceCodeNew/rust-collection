@@ -1,3 +1,16 @@
+FROM quay.io/icecodenew/rust-collection:nightly_build_base AS shadowsocks-rust
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
+ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
+## --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir mimalloc"
+RUN source '/root/.bashrc' \
+    && source '/root/.cargo/env' \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' \
+    && cd /root/.cargo/bin || exit 1 \
+    && strip sslocal ssmanager ssserver ssurl \
+    && bsdtar -cJf ss-rust.tar.xz sslocal ssmanager ssserver ssurl; \
+    rm -rf sslocal ssmanager ssserver ssurl "/root/.cargo/registry" || exit 0
+
 FROM quay.io/icecodenew/rust-collection:nightly_build_base AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest
@@ -84,6 +97,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG cachebust='1603527789'
 ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
+COPY --from=shadowsocks-rust /root/.cargo/bin /root/.cargo/bin/
 COPY --from=b3sum /root/.cargo/bin /root/.cargo/bin/
 COPY --from=fd /root/.cargo/bin /root/.cargo/bin/
 COPY --from=bat /root/.cargo/bin /root/.cargo/bin/
