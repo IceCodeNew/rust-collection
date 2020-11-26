@@ -7,7 +7,7 @@ RUN source '/root/.bashrc' \
     && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' \
     && cd /usr/local/cargo/bin || exit 1 \
     && strip sslocal ssmanager ssserver ssurl \
-    && bsdtar -cJf ss-rust.tar.xz sslocal ssmanager ssserver ssurl; \
+    && bsdtar -cJf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
     rm -rf sslocal ssmanager ssserver ssurl "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:nightly_build_base_alpine AS b3sum

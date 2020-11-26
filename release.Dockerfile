@@ -16,8 +16,8 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
-    --name "ss-rust.tar.xz" \
-    --file "/usr/local/cargo/bin/ss-rust.tar.xz"; \
+    --name "ss-rust-linux-gnu-x64.tar.xz" \
+    --file "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
