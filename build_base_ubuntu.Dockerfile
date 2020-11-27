@@ -23,8 +23,15 @@ ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 RUN apt-get update && apt-get -y --no-install-recommends install \
     apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev lld locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf util-linux \
+    # apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git gpg gpg-agent libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev lld locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf software-properties-common util-linux \
     && apt-get -y full-upgrade \
-    && apt-get clean && apt-get -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false purge \
+    && apt-get -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false purge \
+    # && dpkg --add-architecture i386 \
+    # && curl -L https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
+    # && add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' \
+    # && apt-get update && apt-get -y --install-recommends install \
+    # winehq-devel \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && sed -i '/en_US.UTF-8/s/^# //' /etc/locale.gen \
     && dpkg-reconfigure --frontend=noninteractive locales \
