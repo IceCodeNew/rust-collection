@@ -1,11 +1,10 @@
-FROM quay.io/icecodenew/rust-collection:nightly_build_base_alpine AS shadowsocks-rust
+FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS shadowsocks-rust
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
-## --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir mimalloc"
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' \
     && cd /usr/local/cargo/bin || exit 1 \
     && strip sslocal ssmanager ssserver ssurl \
     && bsdtar -cJf ss-rust.tar.xz sslocal ssmanager ssserver ssurl; \
