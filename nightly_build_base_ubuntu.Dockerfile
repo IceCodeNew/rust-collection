@@ -23,7 +23,7 @@ ENV RUST_VERSION=1.48.0
 ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 RUN apt-get update && apt-get -y --no-install-recommends install \
-    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git libarchive-tools libedit-dev libtool-bin lld locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf util-linux \
+    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev lld locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf util-linux \
     && apt-get -y full-upgrade \
     && apt-get clean && apt-get -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false purge \
     && rm -rf /var/lib/apt/lists/* \
