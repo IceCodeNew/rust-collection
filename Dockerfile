@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' \
+    && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' \
     && cd /usr/local/cargo/bin || exit 1 \
     && strip sslocal ssmanager ssserver ssurl \
     && bsdtar -cJf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
