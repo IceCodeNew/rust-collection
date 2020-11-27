@@ -6,7 +6,7 @@ RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
     && strip sslocal ssmanager ssserver ssurl \
-    && bsdtar -cJf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
+    && bsdtar -a -cf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
     rm -rf sslocal ssmanager ssserver ssurl "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS shadowsocks-rust-cross-build-windows
@@ -17,13 +17,13 @@ ARG CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc \
     CC_x86_64_pc_windows_gnu=x86_64-w64-mingw32-gcc-posix \
     CXX_x86_64_pc_windows_gnu=x86_64-w64-mingw32-g++-posix
 RUN source '/root/.bashrc' \
-    && export LDFLAGS="$(echo $LDFLAGS | sed -E 's/ -fuse-ld=lld//')" \
-    && export CXXFLAGS="$(echo $CXXFLAGS | sed -E -e 's/ -Wl,--icf=all//' -e 's/ -D_FORTIFY_SOURCE=2//' -e 's/ -fstack-clash-protection -fstack-protector-strong//')" \
-    && export CFLAGS="$(echo $CFLAGS | sed -E -e 's/ -Wl,--icf=all//' -e 's/ -D_FORTIFY_SOURCE=2//' -e 's/ -fstack-clash-protection -fstack-protector-strong//')" \
+    && LDFLAGS="$(echo "$LDFLAGS" | sed -E 's/ -fuse-ld=lld//')" \
+    && CXXFLAGS="$(echo "$CXXFLAGS" | sed -E -e 's/ -Wl,--icf=all//' -e 's/ -D_FORTIFY_SOURCE=2//' -e 's/ -fstack-clash-protection -fstack-protector-strong//')" \
+    && CFLAGS="$(echo "$CFLAGS" | sed -E -e 's/ -Wl,--icf=all//' -e 's/ -D_FORTIFY_SOURCE=2//' -e 's/ -fstack-clash-protection -fstack-protector-strong//')" \
+    && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
     && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
-    # && strip sslocal.exe ssmanager.exe ssserver.exe ssurl.exe \
     && bsdtar -a -cf ss-rust-win-gnu-x64.zip sslocal.exe ssmanager.exe ssserver.exe ssurl.exe; \
     rm -rf sslocal.exe ssmanager.exe ssserver.exe ssurl.exe "/usr/local/cargo/registry" || exit 0
 
