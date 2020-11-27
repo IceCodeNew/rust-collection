@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' \
+    && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
     && strip sslocal ssmanager ssserver ssurl \
     && bsdtar -cJf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
@@ -16,7 +16,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG b3sum_latest_tag_name='0.3.7'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl b3sum \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl b3sum --verbose \
     && strip '/usr/local/cargo/bin/b3sum'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
@@ -26,7 +26,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG fd_latest_tag_name='v8.1.1'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl fd-find \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl fd-find --verbose \
     && strip '/usr/local/cargo/bin/fd'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
@@ -36,7 +36,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG bat_latest_tag_name='v0.16.0'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --locked bat \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --locked bat --verbose \
     && strip '/usr/local/cargo/bin/bat'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
@@ -46,7 +46,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG hexyl_latest_tag_name='v0.8.0'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hexyl \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hexyl --verbose \
     && strip '/usr/local/cargo/bin/hexyl'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
@@ -56,7 +56,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG hyperfine_latest_tag_name='v1.11.0'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hyperfine \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hyperfine --verbose \
     && strip '/usr/local/cargo/bin/hyperfine'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
@@ -66,7 +66,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG desed_latest_tag_name='v1.2.0'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl desed \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl desed --verbose \
     && strip '/usr/local/cargo/bin/desed'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
@@ -76,7 +76,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG fnm_latest_tag_name='v1.22.6'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" --verbose \
     && strip '/usr/local/cargo/bin/fnm'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
@@ -86,7 +86,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG checksec_rs_latest_tag_name='v0.0.8'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl checksec \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl checksec --verbose \
     && strip '/usr/local/cargo/bin/checksec'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
@@ -96,7 +96,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
 RUN source '/root/.bashrc' \
     && source '/usr/local/cargo/env' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' --verbose \
     && strip '/usr/local/cargo/bin/boringtun'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
