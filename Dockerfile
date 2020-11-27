@@ -60,6 +60,16 @@ RUN source '/root/.bashrc' \
     && strip '/usr/local/cargo/bin/hyperfine'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
+FROM quay.io/icecodenew/rust-collection:nightly_build_base_alpine AS desed
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/SoptikHa2/desed/releases/latest
+ARG desed_latest_tag_name='v1.2.0'
+RUN source '/root/.bashrc' \
+    && source '/usr/local/cargo/env' \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl desed \
+    && strip '/usr/local/cargo/bin/desed'; \
+    rm -rf "/usr/local/cargo/registry" || exit 0
+
 FROM quay.io/icecodenew/rust-collection:nightly_build_base_alpine AS fnm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/Schniz/fnm/releases/latest
@@ -102,6 +112,7 @@ COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=bat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hexyl /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hyperfine /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=desed /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fnm /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=checksec /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=boringtun /usr/local/cargo/bin /usr/local/cargo/bin/
