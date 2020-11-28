@@ -2,7 +2,7 @@ FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS shadowsocks
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
-ARG CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc \
+ENV CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc \
     CC_x86_64_pc_windows_gnu=x86_64-w64-mingw32-gcc-posix \
     CXX_x86_64_pc_windows_gnu=x86_64-w64-mingw32-g++-posix
 RUN source '/root/.bashrc' \
