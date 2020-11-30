@@ -23,10 +23,14 @@ ENV RUST_VERSION=1.48.0
 ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 RUN apt-get update && apt-get -y --no-install-recommends install \
-    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev lld locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf util-linux \
-    # apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git gpg gpg-agent libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev lld locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf software-properties-common util-linux \
+    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf util-linux \
+    # apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git gpg gpg-agent libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf software-properties-common util-linux \
     && apt-get -y full-upgrade \
     && apt-get -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false purge \
+    && curl -L 'https://apt.llvm.org/llvm-snapshot.gpg.key' | apt-key add - \
+    && echo 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main' > /etc/apt/sources.list.d/llvm.stable.list \
+    && apt-get update && apt-get -y --install-recommends install \
+    lld-11 \
     # && dpkg --add-architecture i386 \
     # && curl -L https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
     # && add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' \
@@ -39,7 +43,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && update-locale LANG=en_US.UTF-8 \
     # && update-ca-certificates \
     # && for i in {1..2}; do checksec --update; done \
-    && update-alternatives --install /usr/local/bin/ld ld /usr/bin/lld 100 \
+    && update-alternatives --install /usr/local/bin/ld ld /usr/lib/llvm-11/bin/lld 100 \
     && update-alternatives --auto ld \
     && update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix \
     && update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix \
