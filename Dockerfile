@@ -1,4 +1,4 @@
-FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS shadowsocks-rust
+FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS shadowsocks-rust
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
