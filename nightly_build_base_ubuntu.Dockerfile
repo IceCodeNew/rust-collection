@@ -64,4 +64,5 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && rm rustup-init \
     && chmod -R a+w $RUSTUP_HOME $CARGO_HOME \
     && cargo install xargo \
-    && cargo install cross
+    && cargo install cross; \
+    rm -rf "/usr/local/cargo/registry" || exit 0
