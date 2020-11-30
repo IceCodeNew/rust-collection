@@ -49,20 +49,20 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix \
     && curl -LR4q --retry 5 --retry-delay 10 --retry-max-time 60 --connect-timeout 60 -m 600 -o '/root/.bashrc' "https://raw.githubusercontent.com/IceCodeNew/myrc/${bashrc_latest_commit_hash}/.bashrc" \
     && eval "$(sed -E '/^curl\(\)/!d' /root/.bashrc)" \
-    && ( cd /usr || exit 1; curl -OJ "https://github.com/Kitware/CMake/releases/download/${cmake_latest_tag_name}/cmake-${cmake_latest_tag_name#v}-Linux-x86_64.sh" && bash "cmake-${cmake_latest_tag_name#v}-Linux-x86_64.sh" --skip-license && rm -f -- "/usr/cmake-${cmake_latest_tag_name#v}-Linux-x86_64.sh" '/usr/bin/cmake-gui' '/usr/bin/ctest' '/usr/bin/cpack' '/usr/bin/ccmake'; true ) \
-    && ( curl -OJ "https://github.com/ninja-build/ninja/releases/download/${ninja_latest_tag_name}/ninja-linux.zip" && bsdtar -xf ninja-linux.zip && install -pvD "./ninja" "/usr/bin/" && rm -f -- './ninja' 'ninja-linux.zip' ) \
+    && ( cd /usr || exit 1; curl -OJ --compressed "https://github.com/Kitware/CMake/releases/download/${cmake_latest_tag_name}/cmake-${cmake_latest_tag_name#v}-Linux-x86_64.sh" && bash "cmake-${cmake_latest_tag_name#v}-Linux-x86_64.sh" --skip-license && rm -f -- "/usr/cmake-${cmake_latest_tag_name#v}-Linux-x86_64.sh" '/usr/bin/cmake-gui' '/usr/bin/ctest' '/usr/bin/cpack' '/usr/bin/ccmake'; true ) \
+    && ( curl -OJ --compressed "https://github.com/ninja-build/ninja/releases/download/${ninja_latest_tag_name}/ninja-linux.zip" && bsdtar -xf ninja-linux.zip && install -pvD "./ninja" "/usr/bin/" && rm -f -- './ninja' 'ninja-linux.zip' ) \
     && mkdir -p '/usr/local/doc' \
     ### https://github.com/sabotage-linux/netbsd-curses
-    && curl -OJ "http://ftp.barfooze.de/pub/sabotage/tarballs/netbsd-curses-${netbsd_curses_tag_name}.tar.xz" \
+    && curl -OJ --compressed "http://ftp.barfooze.de/pub/sabotage/tarballs/netbsd-curses-${netbsd_curses_tag_name}.tar.xz" \
     && bsdtar -xf "netbsd-curses-${netbsd_curses_tag_name}.tar.xz" \
     && ( cd "/netbsd-curses-${netbsd_curses_tag_name}" || exit 1; make CFLAGS="$CFLAGS -fPIC" PREFIX=/usr -j "$(nproc)" all install ) \
     && rm -rf "/netbsd-curses-${netbsd_curses_tag_name}"* \
     ### https://github.com/sabotage-linux/gettext-tiny
-    && curl -OJ "http://ftp.barfooze.de/pub/sabotage/tarballs/gettext-tiny-${gettext_tiny_tag_name}.tar.xz" \
+    && curl -OJ --compressed "http://ftp.barfooze.de/pub/sabotage/tarballs/gettext-tiny-${gettext_tiny_tag_name}.tar.xz" \
     && bsdtar -xf "gettext-tiny-${gettext_tiny_tag_name}.tar.xz" \
     && ( cd "/gettext-tiny-${gettext_tiny_tag_name}" || exit 1; make CFLAGS="$CFLAGS -fPIC" PREFIX=/usr -j "$(nproc)" all install ) \
     && rm -rf "/gettext-tiny-${gettext_tiny_tag_name}"* \
-    && curl -OJ "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" \
+    && curl -OJ --compressed "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" \
     && chmod +x rustup-init \
     && ./rustup-init -y -c rust-src -t x86_64-unknown-linux-gnu x86_64-pc-windows-gnu --default-host x86_64-unknown-linux-gnu --profile minimal --default-toolchain nightly --no-modify-path \
     && rm rustup-init \
