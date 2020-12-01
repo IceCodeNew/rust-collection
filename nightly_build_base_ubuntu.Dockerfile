@@ -23,8 +23,7 @@ ENV RUST_VERSION=1.48.0
 ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 RUN apt-get update && apt-get -y --no-install-recommends install \
-    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf util-linux \
-    # apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git gpg gpg-agent libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf software-properties-common util-linux \
+    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git gpg gpg-agent libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf util-linux \
     && apt-get -y full-upgrade \
     && apt-get -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false purge \
     && curl -L 'https://apt.llvm.org/llvm-snapshot.gpg.key' | apt-key add - \
@@ -33,7 +32,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     lld-11 \
     # && dpkg --add-architecture i386 \
     # && curl -L https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
-    # && add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' \
+    # && echo 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' > /etc/apt/sources.list.d/wine.develop.list \
     # && apt-get update && apt-get -y --install-recommends install \
     # winehq-devel \
     && apt-get clean \
