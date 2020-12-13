@@ -22,7 +22,11 @@ ENV rust_nightly_date='2020-11-26' \
     PKG_CONFIG_ALL_STATIC=true \
     CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=x86_64-linux-musl-gcc \
     CC_x86_64_unknown_linux_musl=x86_64-linux-musl-gcc \
-    CXX_x86_64_unknown_linux_musl=x86_64-linux-musl-g++
+    CXX_x86_64_unknown_linux_musl=x86_64-linux-musl-g++ \
+    CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc \
+    CARGO_TARGET_X86_64_PC_WINDOWS_GNU_RUNNER=wine \
+    CC_x86_64_pc_windows_gnu=x86_64-w64-mingw32-gcc-posix \
+    CXX_x86_64_pc_windows_gnu=x86_64-w64-mingw32-g++-posix
 ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 RUN apt-get update && apt-get -y --no-install-recommends install \
