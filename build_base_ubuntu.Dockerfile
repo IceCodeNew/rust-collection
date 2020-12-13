@@ -64,7 +64,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     ### https://doc.rust-lang.org/nightly/rustc/platform-support.html
     && curl -OJ --compressed "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" \
     && chmod +x rustup-init \
-    && ./rustup-init -y -c rust-src -t x86_64-unknown-linux-gnu x86_64-pc-windows-gnu --default-host x86_64-unknown-linux-gnu --profile minimal --no-modify-path \
+    && ./rustup-init -y -c rust-src -t x86_64-unknown-linux-gnu x86_64-unknown-linux-musl x86_64-pc-windows-gnu --default-host x86_64-unknown-linux-gnu --profile minimal --no-modify-path \
     && rm rustup-init \
     && chmod -R a+w $RUSTUP_HOME $CARGO_HOME \
     && cargo install xargo \
