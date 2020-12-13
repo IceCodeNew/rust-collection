@@ -1,4 +1,4 @@
-# syntax = docker/dockerfile:1.0-experimental
+# syntax=docker.io/docker/dockerfile-upstream:labs
 FROM quay.io/icecodenew/rust-collection:latest AS rust_upload
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 COPY got_github_release.sh /tmp/got_github_release.sh
