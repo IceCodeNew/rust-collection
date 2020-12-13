@@ -5,12 +5,12 @@ ARG checksec_sh_latest_tag_name=2.4.0
 # https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc
 ARG bashrc_latest_commit_hash=dffed49d1d1472f1b22b3736a5c191d74213efaa
 # https://api.github.com/repos/rust-lang/rust/releases/latest
-ARG rust_nightly_date='2020-11-26'
-ENV RUSTUP_HOME=/usr/local/rustup \
+ENV rust_nightly_date='2020-11-26' \
+    RUST_VERSION=1.48.0 \
+    RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
     PKG_CONFIG_ALL_STATIC=true
-ENV RUST_VERSION=1.48.0
 ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 RUN apk update; apk --no-progress --no-cache add \
@@ -24,6 +24,7 @@ RUN apk update; apk --no-progress --no-cache add \
     eval 'curl() { /usr/bin/curl -LRq --retry 5 --retry-delay 10 --retry-max-time 60 "$@"; }'; \
     curl -4q -o '/usr/bin/checksec' "https://raw.githubusercontent.com/slimm609/checksec.sh/${checksec_sh_latest_tag_name}/checksec"; \
     chmod +x '/usr/bin/checksec'; \
+    ### https://doc.rust-lang.org/nightly/rustc/platform-support.html
     curl -OJ "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-musl/rustup-init"; \
     chmod +x ./rustup-init; \
     ./rustup-init -y -t x86_64-unknown-linux-musl --default-host x86_64-unknown-linux-musl --profile minimal --default-toolchain nightly; \
