@@ -9,10 +9,6 @@ ARG bashrc_latest_commit_hash=dffed49d1d1472f1b22b3736a5c191d74213efaa
 ARG cmake_latest_tag_name=v3.19.1
 # https://api.github.com/repos/ninja-build/ninja/releases/latest
 ARG ninja_latest_tag_name=v1.10.1
-# https://api.github.com/repos/sabotage-linux/netbsd-curses/releases/latest
-ARG netbsd_curses_tag_name=0.3.1
-# https://api.github.com/repos/sabotage-linux/gettext-tiny/releases/latest
-ARG gettext_tiny_tag_name=0.3.2
 # https://api.github.com/repos/rust-lang/rust/releases/latest
 ENV rust_nightly_date='2020-11-26' \
     RUST_VERSION=1.48.0 \
@@ -35,7 +31,7 @@ ENV rust_nightly_date='2020-11-26' \
 ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 RUN apt-get update && apt-get -y --no-install-recommends install \
-    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix git gpg gpg-agent libarchive-tools libedit-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools musl-tools ncurses-bin ninja-build pkgconf util-linux \
+    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix file gettext git gpg gpg-agent libarchive-tools libedit-dev libltdl-dev libncurses-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools netbase ninja-build pkgconf util-linux \
     && apt-get -y full-upgrade \
     && apt-get -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false purge \
     && curl -L 'https://apt.llvm.org/llvm-snapshot.gpg.key' | apt-key add - \
@@ -65,14 +61,6 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && ( cd /usr || exit 1; curl -OJ --compressed "https://github.com/Kitware/CMake/releases/download/${cmake_latest_tag_name}/cmake-${cmake_latest_tag_name#v}-Linux-x86_64.sh" && bash "cmake-${cmake_latest_tag_name#v}-Linux-x86_64.sh" --skip-license && rm -f -- "/usr/cmake-${cmake_latest_tag_name#v}-Linux-x86_64.sh" '/usr/bin/cmake-gui' '/usr/bin/ccmake' '/usr/bin/ctest'; rm -rf -- /usr/share/cmake-3.16; true ) \
     && ( tmp_dir=$(mktemp -d) && pushd "$tmp_dir" || exit 1 && curl -sS "https://github.com/ninja-build/ninja/releases/download/${ninja_latest_tag_name}/ninja-linux.zip" | bsdtar -xf- && $(type -P install) -pvD './ninja' '/usr/bin/' && popd || exit 1 && /bin/rm -rf "$tmp_dir" && dirs -c ) \
     && mkdir '/usr/local/doc' \
-    ### https://github.com/sabotage-linux/netbsd-curses
-    && curl -sS --compressed "http://ftp.barfooze.de/pub/sabotage/tarballs/netbsd-curses-${netbsd_curses_tag_name}.tar.xz" | bsdtar -xf- \
-    && ( cd "/netbsd-curses-${netbsd_curses_tag_name}" || exit 1; make CFLAGS="$CFLAGS -fPIC" PREFIX=/usr -j "$(nproc)" all install ) \
-    && rm -rf "/netbsd-curses-${netbsd_curses_tag_name}" \
-    ### https://github.com/sabotage-linux/gettext-tiny
-    && curl -sS --compressed "http://ftp.barfooze.de/pub/sabotage/tarballs/gettext-tiny-${gettext_tiny_tag_name}.tar.xz" | bsdtar -xf- \
-    && ( cd "/gettext-tiny-${gettext_tiny_tag_name}" || exit 1; make CFLAGS="$CFLAGS -fPIC" PREFIX=/usr -j "$(nproc)" all install ) \
-    && rm -rf "/gettext-tiny-${gettext_tiny_tag_name}" \
     ### https://doc.rust-lang.org/nightly/rustc/platform-support.html
     && curl -OJ --compressed "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" \
     && chmod +x rustup-init \
