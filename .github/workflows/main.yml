@@ -109,8 +109,8 @@ jobs:
           sed -i -E "s/^ARG fnm_latest_tag_name=.+/ARG fnm_latest_tag_name=${fnm_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG checksec_rs_latest_tag_name=.+/ARG checksec_rs_latest_tag_name=${checksec_rs_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG boringtun_latest_commit_hash=.+/ARG boringtun_latest_commit_hash=${boringtun_latest_commit_hash:?empty value}/" Dockerfile
-          sed -i -E "s/^    RUST_VERSION=.+/    RUST_VERSION=${RUST_VERSION:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
-          sed -i -E "s/^ENV rust_nightly_date=.+/ENV rust_nightly_date=${rust_nightly_date:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          sed -i -E "s/^    RUST_VERSION=.+/    RUST_VERSION=${RUST_VERSION:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          sed -i -E "s/^ENV rust_nightly_date=.+/ENV rust_nightly_date=${rust_nightly_date:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
           git add Dockerfile build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           git commit -m "Bump"
