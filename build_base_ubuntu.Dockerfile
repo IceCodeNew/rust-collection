@@ -19,7 +19,10 @@ ENV rust_nightly_date='2020-11-26' \
     RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:/usr/lib/llvm-11/bin:$PATH \
-    PKG_CONFIG_ALL_STATIC=true
+    PKG_CONFIG_ALL_STATIC=true \
+    CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=x86_64-linux-musl-gcc \
+    CC_x86_64_unknown_linux_musl=x86_64-linux-musl-gcc \
+    CXX_x86_64_unknown_linux_musl=x86_64-linux-musl-g++
 ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
 RUN apt-get update && apt-get -y --no-install-recommends install \
@@ -69,4 +72,6 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && chmod -R a+w $RUSTUP_HOME $CARGO_HOME \
     && cargo install xargo \
     && cargo install cross; \
-    rm -rf "/usr/local/cargo/registry" || exit 0
+    rm -rf "/usr/local/cargo/registry" || exit 0 \
+    ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.x86_64-unknown-linux-musl
+    && ( tmp_dir=$(mktemp -d) && pushd "$tmp_dir" || exit 1 && curl -sS "https://github.com/richfelker/musl-cross-make/archive/master.tar.gz" | bsdtar -xf-  --strip-components=1 && make install "-j$(nproc)" DL_CMD='curl -sSLRq --retry 5 --retry-delay 10 --retry-max-time 60 --connect-timeout 60 -C - -o' LINUX_HEADERS_SITE="https://ci-mirrors.rust-lang.org/rustc/sabotage-linux-tarballs" OUTPUT=/usr/local/ TARGET=x86_64-linux-musl 'COMMON_CONFIG += CFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" CXXFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" LDFLAGS="-s -fuse-ld=lld"' && popd || exit 1 && /bin/rm -rf "$tmp_dir" && dirs -c )
