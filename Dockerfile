@@ -8,6 +8,12 @@ RUN source '/root/.bashrc' \
     && strip sslocal ssmanager ssserver ssurl \
     && bsdtar -a -cf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
     rm -f sslocal ssmanager ssserver ssurl
+RUN export LDFLAGS="-s -fuse-ld=lld" \
+    && env \
+    && RUSTFLAGS="-C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "trust-dns local-http local-http-rustls local-tunnel local-socks4 local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && cd /usr/local/cargo/bin || exit 1 \
+    && bsdtar -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz sslocal ssmanager ssserver ssurl; \
+    rm -f sslocal ssmanager ssserver ssurl
 RUN LDFLAGS="$(echo "$LDFLAGS" | sed -E 's/ -fuse-ld=lld//')" \
     && CXXFLAGS="$(echo "$CXXFLAGS" | sed -E -e 's/ -Wl,--icf=all//' -e 's/ -D_FORTIFY_SOURCE=2//' -e 's/ -fstack-clash-protection -fstack-protector-strong//')" \
     && CFLAGS="$(echo "$CFLAGS" | sed -E -e 's/ -Wl,--icf=all//' -e 's/ -D_FORTIFY_SOURCE=2//' -e 's/ -fstack-clash-protection -fstack-protector-strong//')" \

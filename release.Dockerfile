@@ -22,6 +22,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
+    --name "ss-rust-linux-arm-musleabi5-x32.tar.gz" \
+    --file "/usr/local/cargo/bin/ss-rust-linux-arm-musleabi5-x32.tar.gz"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
     --name "ss-rust-win-gnu-x64.zip" \
     --file "/usr/local/cargo/bin/ss-rust-win-gnu-x64.zip"; \
     github-release upload \
