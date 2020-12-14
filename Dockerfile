@@ -96,13 +96,18 @@ RUN source '/root/.bashrc' \
     && strip '/usr/local/cargo/bin/checksec'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS boringtun
+FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS boringtun
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
 ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
 RUN source '/root/.bashrc' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' --verbose \
-    && strip '/usr/local/cargo/bin/boringtun'; \
+    && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' --verbose \
+    && strip '/usr/local/cargo/bin/boringtun' \
+    && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-musl-x64'
+RUN export LDFLAGS="-s -fuse-ld=lld" \
+    && env \
+    && RUSTFLAGS="-C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --git 'https://github.com/cloudflare/boringtun.git' --verbose \
+    && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/alpine:edge AS collection
