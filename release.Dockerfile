@@ -76,6 +76,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
+    --name "dog" \
+    --file "/usr/local/cargo/bin/dog"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
     --name "fnm" \
     --file "/usr/local/cargo/bin/fnm"; \
     github-release upload \
