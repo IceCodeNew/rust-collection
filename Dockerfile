@@ -21,8 +21,23 @@ RUN LDFLAGS="$(echo "$LDFLAGS" | sed -E 's/ -fuse-ld=lld//')" \
     && env \
     && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns local server manager utilities local-dns local-http local-http-rustls local-tunnel local-socks4" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
+    # && x86_64-w64-mingw32-strip sslocal.exe ssmanager.exe ssserver.exe ssurl.exe \
     && bsdtar -a -cf ss-rust-win-gnu-x64.zip sslocal.exe ssmanager.exe ssserver.exe ssurl.exe; \
     rm -rf sslocal.exe ssmanager.exe ssserver.exe ssurl.exe "/usr/local/cargo/registry" || exit 0
+
+FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS boringtun
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
+ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
+RUN source '/root/.bashrc' \
+    && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' --verbose \
+    && strip '/usr/local/cargo/bin/boringtun' \
+    && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-musl-x64'
+RUN export LDFLAGS="-s -fuse-ld=lld" \
+    && env \
+    && RUSTFLAGS="-C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --git 'https://github.com/cloudflare/boringtun.git' --verbose \
+    && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32'; \
+    rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -69,15 +84,6 @@ RUN source '/root/.bashrc' \
     && strip '/usr/local/cargo/bin/hyperfine'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS desed
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/SoptikHa2/desed/releases/latest
-ARG desed_latest_tag_name='v1.2.0'
-RUN source '/root/.bashrc' \
-    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl desed --verbose \
-    && strip '/usr/local/cargo/bin/desed'; \
-    rm -rf "/usr/local/cargo/registry" || exit 0
-
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fnm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/Schniz/fnm/releases/latest
@@ -96,18 +102,13 @@ RUN source '/root/.bashrc' \
     && strip '/usr/local/cargo/bin/checksec'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS boringtun
+FROM quay.io/icecodenew/rust-collection:build_base_alpine AS desed
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
-ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
+# https://api.github.com/repos/SoptikHa2/desed/releases/latest
+ARG desed_latest_tag_name='v1.2.0'
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' --verbose \
-    && strip '/usr/local/cargo/bin/boringtun' \
-    && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-musl-x64'
-RUN export LDFLAGS="-s -fuse-ld=lld" \
-    && env \
-    && RUSTFLAGS="-C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --git 'https://github.com/cloudflare/boringtun.git' --verbose \
-    && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32'; \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl desed --verbose \
+    && strip '/usr/local/cargo/bin/desed'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/alpine:edge AS collection
@@ -117,15 +118,15 @@ ARG cachebust='1603527789'
 ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=shadowsocks-rust /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=boringtun /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=b3sum /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=bat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hexyl /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hyperfine /usr/local/cargo/bin /usr/local/cargo/bin/
-COPY --from=desed /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fnm /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=checksec /usr/local/cargo/bin /usr/local/cargo/bin/
-COPY --from=boringtun /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=desed /usr/local/cargo/bin /usr/local/cargo/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash coreutils curl tzdata; \
     apk --no-progress --no-cache upgrade; \

@@ -34,6 +34,18 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
+    --name "boringtun-linux-musl-x64" \
+    --file "/usr/local/cargo/bin/boringtun-linux-musl-x64"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
+    --name "boringtun-linux-arm-musleabi5-x32" \
+    --file "/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
     --name "b3sum" \
     --file "/usr/local/cargo/bin/b3sum"; \
     github-release upload \
@@ -64,12 +76,6 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
-    --name "desed" \
-    --file "/usr/local/cargo/bin/desed"; \
-    github-release upload \
-    --user IceCodeNew \
-    --repo rust-collection \
-    --tag "$tag_name" \
     --name "fnm" \
     --file "/usr/local/cargo/bin/fnm"; \
     github-release upload \
@@ -82,11 +88,5 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
-    --name "boringtun-linux-musl-x64" \
-    --file "/usr/local/cargo/bin/boringtun-linux-musl-x64"; \
-    github-release upload \
-    --user IceCodeNew \
-    --repo rust-collection \
-    --tag "$tag_name" \
-    --name "boringtun-linux-arm-musleabi5-x32" \
-    --file "/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32"
+    --name "desed" \
+    --file "/usr/local/cargo/bin/desed"

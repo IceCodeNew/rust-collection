@@ -54,6 +54,9 @@ jobs:
           echo "shadowsocks_rust_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "boringtun_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "b3sum_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -69,18 +72,15 @@ jobs:
           echo "hyperfine_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/sharkdp/hyperfine/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "desed_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/SoptikHa2/desed/releases/latest' |
-                grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "fnm_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/Schniz/fnm/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "checksec_rs_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/etke/checksec.rs/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "boringtun_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1' |
-                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "desed_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/SoptikHa2/desed/releases/latest' |
+                grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "RUST_VERSION=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/rust-lang/rust/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -100,15 +100,15 @@ jobs:
           sed -i -E "s/^ARG netbsd_curses_tag_name=.+/ARG netbsd_curses_tag_name=${netbsd_curses_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           sed -i -E "s/^ARG gettext_tiny_tag_name=.+/ARG gettext_tiny_tag_name=${gettext_tiny_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           sed -i -E "s/^ARG shadowsocks_rust_latest_commit_hash=.+/ARG shadowsocks_rust_latest_commit_hash=${shadowsocks_rust_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG boringtun_latest_commit_hash=.+/ARG boringtun_latest_commit_hash=${boringtun_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG b3sum_latest_tag_name=.+/ARG b3sum_latest_tag_name=${b3sum_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG fd_latest_tag_name=.+/ARG fd_latest_tag_name=${fd_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG bat_latest_tag_name=.+/ARG bat_latest_tag_name=${bat_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG hexyl_latest_tag_name=.+/ARG hexyl_latest_tag_name=${hexyl_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG hyperfine_latest_tag_name=.+/ARG hyperfine_latest_tag_name=${hyperfine_latest_tag_name:?empty value}/" Dockerfile
-          sed -i -E "s/^ARG desed_latest_tag_name=.+/ARG desed_latest_tag_name=${desed_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG fnm_latest_tag_name=.+/ARG fnm_latest_tag_name=${fnm_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG checksec_rs_latest_tag_name=.+/ARG checksec_rs_latest_tag_name=${checksec_rs_latest_tag_name:?empty value}/" Dockerfile
-          sed -i -E "s/^ARG boringtun_latest_commit_hash=.+/ARG boringtun_latest_commit_hash=${boringtun_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG desed_latest_tag_name=.+/ARG desed_latest_tag_name=${desed_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^    RUST_VERSION=.+/    RUST_VERSION=${RUST_VERSION:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           sed -i -E "s/^ENV rust_nightly_date=.+/ENV rust_nightly_date=${rust_nightly_date:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
