@@ -84,19 +84,16 @@ RUN source '/root/.bashrc' \
     && strip '/usr/local/cargo/bin/hyperfine'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS dog
+FROM quay.io/icecodenew/rust-collection:build_base_alpine AS dog
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/ogham/dog/commits?per_page=1
 ARG dog_latest_commit_hash='d2d22fd8a4ba79027b5e2013d4ded3743dad5262'
 RUN source '/root/.bashrc' \
-    && apt-get update && apt-get -y --no-install-recommends install \
-    libssl-dev \
-    && apt-get -y full-upgrade \
-    && apt-get -y --auto-remove -o APT::AutoRemove::RecommendsImportant=true purge \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && ln -s /usr/include/x86_64-linux-gnu/openssl/opensslconf.h /usr/include/openssl/opensslconf.h \
-    && OPENSSL_STATIC=1 cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/ogham/dog.git' dog --verbose \
+    && apk update; apk --no-progress --no-cache add \
+    openssl-libs-static openssl-dev \
+    && apk --no-progress --no-cache upgrade \
+    && rm -rf /var/cache/apk/*; \
+    OPENSSL_STATIC=1 cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/ogham/dog.git' dog --verbose \
     && strip '/usr/local/cargo/bin/dog'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
