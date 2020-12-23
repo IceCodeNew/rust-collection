@@ -23,10 +23,10 @@ ENV rust_nightly_date='2020-11-26' \
     CARGO_TARGET_X86_64_PC_WINDOWS_GNU_RUNNER=wine \
     CC_x86_64_pc_windows_gnu=x86_64-w64-mingw32-gcc-posix \
     CXX_x86_64_pc_windows_gnu=x86_64-w64-mingw32-g++-posix \
-    CARGO_TARGET_ARMV7_UNKNOWN_LINUX_MUSLEABI_LINKER=arm-linux-musleabi-gcc \
+    CARGO_TARGET_ARMV7_UNKNOWN_LINUX_MUSLEABI_LINKER=armv6-linux-musleabi-gcc \
     CARGO_TARGET_ARMV7_UNKNOWN_LINUX_MUSLEABI_RUNNER=qemu-arm \
-    CC_armv7_unknown_linux_musleabi=arm-linux-musleabi-gcc \
-    CXX_armv7_unknown_linux_musleabi=arm-linux-musleabi-g++
+    CC_armv7_unknown_linux_musleabi=armv6-linux-musleabi-gcc \
+    CXX_armv7_unknown_linux_musleabi=armv6-linux-musleabi-g++
 #     RUST_TEST_THREADS=1
 ENV CROSS_DOCKER_IN_DOCKER=true
 ENV CROSS_CONTAINER_ENGINE=podman
@@ -74,6 +74,8 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && cargo install cross; \
     rm -rf "/usr/local/cargo/registry" || exit 0 \
     ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.x86_64-unknown-linux-musl
-    && ( tmp_dir=$(mktemp -d) && pushd "$tmp_dir" || exit 1 && curl -sS "https://github.com/richfelker/musl-cross-make/archive/master.tar.gz" | bsdtar -xf-  --strip-components=1 && make install "-j$(nproc)" DL_CMD='curl -sSLRq --retry 5 --retry-delay 10 --retry-max-time 60 --connect-timeout 60 -C - -o' LINUX_HEADERS_SITE="https://ci-mirrors.rust-lang.org/rustc/sabotage-linux-tarballs" OUTPUT=/usr/local/ TARGET=x86_64-linux-musl 'COMMON_CONFIG += CFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs" CXXFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs" LDFLAGS="-s -fuse-ld=lld"' && popd || exit 1 && /bin/rm -rf "$tmp_dir" && dirs -c ) \
+    && curl -sS "https://musl.cc/x86_64-linux-musl-cross.tgz" | bsdtar -xf- -C /usr/local \
+    # && ( tmp_dir=$(mktemp -d) && pushd "$tmp_dir" || exit 1 && curl -sS "https://github.com/richfelker/musl-cross-make/archive/master.tar.gz" | bsdtar -xf-  --strip-components=1 && make install "-j$(nproc)" DL_CMD='curl -sSLRq --retry 5 --retry-delay 10 --retry-max-time 60 --connect-timeout 60 -C - -o' LINUX_HEADERS_SITE="https://ci-mirrors.rust-lang.org/rustc/sabotage-linux-tarballs" OUTPUT=/usr/local/ TARGET=x86_64-linux-musl 'COMMON_CONFIG += CFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs" CXXFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs" LDFLAGS="-s -fuse-ld=lld"' && popd || exit 1 && /bin/rm -rf "$tmp_dir" && dirs -c ) \
     ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.arm-unknown-linux-musleabi
-    && ( tmp_dir=$(mktemp -d) && pushd "$tmp_dir" || exit 1 && curl -sS "https://github.com/richfelker/musl-cross-make/archive/master.tar.gz" | bsdtar -xf-  --strip-components=1 && make install "-j$(nproc)" DL_CMD='curl -sSLRq --retry 5 --retry-delay 10 --retry-max-time 60 --connect-timeout 60 -C - -o' LINUX_HEADERS_SITE="https://ci-mirrors.rust-lang.org/rustc/sabotage-linux-tarballs" OUTPUT=/usr/local/ TARGET=arm-linux-musleabi 'COMMON_CONFIG += --with-arch=armv7-a --with-float=soft --with-mode=arm CFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs" CXXFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs" LDFLAGS="-s -fuse-ld=lld"' && popd || exit 1 && /bin/rm -rf "$tmp_dir" && dirs -c )
+    && curl -sS "https://musl.cc/armv6-linux-musleabi-cross.tgz" | bsdtar -xf- -C /usr/local
+    # && ( tmp_dir=$(mktemp -d) && pushd "$tmp_dir" || exit 1 && curl -sS "https://github.com/richfelker/musl-cross-make/archive/master.tar.gz" | bsdtar -xf-  --strip-components=1 && make install "-j$(nproc)" DL_CMD='curl -sSLRq --retry 5 --retry-delay 10 --retry-max-time 60 --connect-timeout 60 -C - -o' LINUX_HEADERS_SITE="https://ci-mirrors.rust-lang.org/rustc/sabotage-linux-tarballs" OUTPUT=/usr/local/ TARGET=arm-linux-musleabi 'COMMON_CONFIG += --with-arch=armv7-a --with-float=soft --with-mode=arm CFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs" CXXFLAGS="-Os -pipe -D_FORTIFY_SOURCE=2 -fexceptions -fstack-clash-protection -fstack-protector-strong -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs" LDFLAGS="-s -fuse-ld=lld"' && popd || exit 1 && /bin/rm -rf "$tmp_dir" && dirs -c )
