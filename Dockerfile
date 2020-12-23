@@ -12,6 +12,7 @@ RUN export LDFLAGS="-s -fuse-ld=lld" \
     && env \
     && RUSTFLAGS="-C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
+    && armv6-linux-musleabi-strip sslocal ssmanager ssserver ssurl \
     && bsdtar -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz sslocal ssmanager ssserver ssurl; \
     rm -f sslocal ssmanager ssserver ssurl
 RUN LDFLAGS="$(echo "$LDFLAGS" | sed -E 's/ -fuse-ld=lld//')" \
