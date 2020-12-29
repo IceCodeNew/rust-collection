@@ -40,6 +40,15 @@ RUN export LDFLAGS="-s -fuse-ld=lld" \
     && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
+FROM quay.io/icecodenew/rust-collection:build_base_alpine AS rsign2
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/jedisct1/rsign2/commits?per_page=1
+ARG rsign2_latest_commit_hash='79e058b7c18bcd519f160b5391c240549a0f5fdc'
+RUN source '/root/.bashrc' \
+    && cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/jedisct1/rsign2.git' --verbose \
+    && strip '/usr/local/cargo/bin/rsign'; \
+    rm -rf "/usr/local/cargo/registry" || exit 0
+
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest
@@ -142,6 +151,7 @@ ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=shadowsocks-rust /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=boringtun /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=rsign2 /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=b3sum /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=bat /usr/local/cargo/bin /usr/local/cargo/bin/

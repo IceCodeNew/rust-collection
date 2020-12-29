@@ -46,6 +46,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
+    --name "rsign" \
+    --file "/usr/local/cargo/bin/rsign"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
     --name "b3sum" \
     --file "/usr/local/cargo/bin/b3sum"; \
     github-release upload \
