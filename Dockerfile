@@ -3,14 +3,14 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 multi-threaded local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && RUSTFLAGS="-C target-feature=+crt-static,+avx2,+fma,+adx" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 multi-threaded local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
     && strip sslocal ssmanager ssserver ssurl \
     && bsdtar -a -cf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
     rm -f sslocal ssmanager ssserver ssurl
 RUN export LDFLAGS="-s -fuse-ld=lld" \
     && env \
-    && RUSTFLAGS="-C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 multi-threaded local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && RUSTFLAGS="-C target-feature=+crt-static,-vfp2,-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 multi-threaded local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
     && armv6-linux-musleabi-strip sslocal ssmanager ssserver ssurl \
     && bsdtar -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz sslocal ssmanager ssserver ssurl; \
@@ -20,7 +20,7 @@ RUN LDFLAGS="$(echo "$LDFLAGS" | sed -E 's/ -fuse-ld=lld//')" \
     && CFLAGS="$(echo "$CFLAGS" | sed -E -e 's/ -Wl,--icf=all//' -e 's/ -D_FORTIFY_SOURCE=2//' -e 's/ -fstack-clash-protection -fstack-protector-strong//')" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && RUSTFLAGS="-C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 multi-threaded" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && RUSTFLAGS="-C target-feature=+crt-static,+avx2,+fma,+adx" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 multi-threaded" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
     # && x86_64-w64-mingw32-strip sslocal.exe ssmanager.exe ssserver.exe ssurl.exe \
     && bsdtar -a -cf ss-rust-win-gnu-x64.zip sslocal.exe ssmanager.exe ssserver.exe ssurl.exe; \
