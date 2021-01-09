@@ -2,7 +2,19 @@ FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS shadowsocks
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
-RUN source '/root/.bashrc' \
+RUN LDFLAGS="-fuse-ld=lld -s" \
+    && CXXFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
+    && CFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
+    && export LDFLAGS CXXFLAGS CFLAGS \
+    && env \
+    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=+crt-static,+avx2,+fma,+adx" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && cd /usr/local/cargo/bin || exit 1 \
+    && strip ssmanager ssserver \
+    && bsdtar -a -cf 4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz ssmanager ssserver; \
+    rm -f ssmanager ssserver
+RUN unset LDFLAGS CXXFLAGS CFLAGS \
+    && source '/root/.bashrc' \
+    && env \
     && RUSTFLAGS="-C target-feature=+crt-static,+avx2,+fma,+adx" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 multi-threaded local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
     && strip sslocal ssmanager ssserver ssurl \
