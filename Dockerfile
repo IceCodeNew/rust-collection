@@ -20,16 +20,16 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && strip sslocal ssmanager ssserver ssurl \
     && bsdtar -a -cf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
     rm -f sslocal ssmanager ssserver ssurl
-RUN export LDFLAGS="-s -fuse-ld=lld" \
+RUN export LDFLAGS="-fuse-ld=lld -s" \
     && env \
     && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 multi-threaded local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
     && armv6-linux-musleabi-strip sslocal ssmanager ssserver ssurl \
     && bsdtar -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz sslocal ssmanager ssserver ssurl; \
     rm -f sslocal ssmanager ssserver ssurl
-RUN LDFLAGS="$(echo "$LDFLAGS" | sed -E 's/ -fuse-ld=lld//')" \
-    && CXXFLAGS="$(echo "$CXXFLAGS" | sed -E -e 's/ -Wl,--icf=all//' -e 's/ -D_FORTIFY_SOURCE=2//' -e 's/ -fstack-clash-protection -fstack-protector-strong//')" \
-    && CFLAGS="$(echo "$CFLAGS" | sed -E -e 's/ -Wl,--icf=all//' -e 's/ -D_FORTIFY_SOURCE=2//' -e 's/ -fstack-clash-protection -fstack-protector-strong//')" \
+RUN LDFLAGS="-s" \
+    && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
+    && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
     && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx2,+fma,+adx" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-http-rustls local-tunnel local-socks4 multi-threaded" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
