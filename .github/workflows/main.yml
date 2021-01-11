@@ -97,17 +97,12 @@ jobs:
           echo "rust_nightly_date=$(TZ=':Asia/Taipei' date +%F)" >> $GITHUB_ENV
         shell: bash
       # Runs a set of commands using the runners shell
-      - name: Bump
+      - name: Force push `release` branch
         run: |
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
+          git checkout release
           git reset --hard origin/master
-          sed -i -E "s/^ARG checksec_sh_latest_tag_name=.+/ARG checksec_sh_latest_tag_name=${checksec_sh_latest_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
-          sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
-          sed -i -E "s/^ARG cmake_latest_tag_name=.+/ARG cmake_latest_tag_name=${cmake_latest_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
-          sed -i -E "s/^ARG ninja_latest_tag_name=.+/ARG ninja_latest_tag_name=${ninja_latest_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
-          sed -i -E "s/^ARG netbsd_curses_tag_name=.+/ARG netbsd_curses_tag_name=${netbsd_curses_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
-          sed -i -E "s/^ARG gettext_tiny_tag_name=.+/ARG gettext_tiny_tag_name=${gettext_tiny_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           sed -i -E "s/^ARG shadowsocks_rust_latest_commit_hash=.+/ARG shadowsocks_rust_latest_commit_hash=${shadowsocks_rust_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG boringtun_latest_commit_hash=.+/ARG boringtun_latest_commit_hash=${boringtun_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG rsign2_latest_commit_hash=.+/ARG rsign2_latest_commit_hash=${rsign2_latest_commit_hash:?empty value}/" Dockerfile
@@ -121,18 +116,8 @@ jobs:
           sed -i -E "s/^ARG checksec_rs_latest_tag_name=.+/ARG checksec_rs_latest_tag_name=${checksec_rs_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG just_latest_commit_hash=.+/ARG just_latest_commit_hash=${just_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG desed_latest_tag_name=.+/ARG desed_latest_tag_name=${desed_latest_tag_name:?empty value}/" Dockerfile
-          sed -i -E "s/^    RUST_VERSION=.+/    RUST_VERSION=${RUST_VERSION:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
-          sed -i -E "s/^ENV rust_nightly_date=.+/ENV rust_nightly_date=${rust_nightly_date:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
-          git add Dockerfile build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
-          git commit -m "Bump"
-          git push -u origin master
-      - name: Force push `release` branch
-        run: |
-          git config --local user.name "actions"
-          git config --local user.email "action@github.com"
-          git checkout release
-          git reset --hard origin/master
+          git add Dockerfile
           git rm got_github_release.sh release.Dockerfile build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
@@ -143,6 +128,15 @@ jobs:
           git config --local user.email "action@github.com"
           git checkout build_base
           git reset --hard origin/master
+          sed -i -E "s/^ARG checksec_sh_latest_tag_name=.+/ARG checksec_sh_latest_tag_name=${checksec_sh_latest_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          sed -i -E "s/^ARG cmake_latest_tag_name=.+/ARG cmake_latest_tag_name=${cmake_latest_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          sed -i -E "s/^ARG ninja_latest_tag_name=.+/ARG ninja_latest_tag_name=${ninja_latest_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          sed -i -E "s/^ARG netbsd_curses_tag_name=.+/ARG netbsd_curses_tag_name=${netbsd_curses_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          sed -i -E "s/^ARG gettext_tiny_tag_name=.+/ARG gettext_tiny_tag_name=${gettext_tiny_tag_name:?empty value}/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          sed -i -E "s/^    RUST_VERSION=.+/    RUST_VERSION=${RUST_VERSION:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          sed -i -E "s/^ENV rust_nightly_date=.+/ENV rust_nightly_date=${rust_nightly_date:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
+          git add build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile nightly_build_base_alpine.Dockerfile nightly_build_base_ubuntu.Dockerfile
           git rm got_github_release.sh Dockerfile release.Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
