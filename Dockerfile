@@ -7,7 +7,7 @@ RUN LDFLAGS="-fuse-ld=lld -s" \
     && CFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=+crt-static,+avx2,+fma,+adx" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=+crt-static,-avx2,-fma,-adx" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
     && strip ssmanager ssserver \
     && bsdtar --no-xattrs -a -cf 4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz ssmanager ssserver; \
