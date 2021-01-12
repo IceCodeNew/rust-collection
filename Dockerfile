@@ -43,7 +43,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
 ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' --verbose \
+    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' --verbose \
     && strip '/usr/local/cargo/bin/boringtun' \
     && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-musl-x64'
 RUN export LDFLAGS="-s -fuse-ld=lld" \
