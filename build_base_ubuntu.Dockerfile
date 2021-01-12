@@ -37,7 +37,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && curl -L 'https://apt.llvm.org/llvm-snapshot.gpg.key' | apt-key add - \
     && echo 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main' > /etc/apt/sources.list.d/llvm.stable.list \
     && apt-get update && apt-get -y --install-recommends install \
-    lld-11 \
+    clang-11 lld-11 \
     # && dpkg --add-architecture i386 \
     # && curl -L https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
     # && echo 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' > /etc/apt/sources.list.d/wine.develop.list \
