@@ -158,7 +158,7 @@ RUN source '/root/.bashrc' \
 FROM quay.io/icecodenew/alpine:edge AS collection
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # date +%s
-ARG cachebust='1603527789'
+# ARG cachebust='1603527789'
 ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=shadowsocks-rust /usr/local/cargo/bin /usr/local/cargo/bin/
