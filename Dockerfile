@@ -34,7 +34,7 @@ RUN LDFLAGS="-s" \
     && env \
     && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx2,+fma,+adx" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && cd /usr/local/cargo/bin || exit 1 \
-    # && x86_64-w64-mingw32-strip sslocal.exe ssurl.exe \
+    && x86_64-w64-mingw32-strip sslocal.exe ssurl.exe \
     && bsdtar --no-xattrs -a -cf ss-rust-win-gnu-x64.zip sslocal.exe ssurl.exe; \
     rm -rf sslocal.exe ssurl.exe "/usr/local/cargo/registry" || exit 0
 
