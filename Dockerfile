@@ -21,7 +21,7 @@ RUN LDFLAGS="-s" \
     && cd /usr/local/cargo/bin || exit 1 \
     && x86_64-w64-mingw32-strip sslocal.exe ssurl.exe \
     && bsdtar --no-xattrs -a -cf ss-rust-win-gnu-x64.zip sslocal.exe ssurl.exe; \
-    rm -rf sslocal.exe ssurl.exe "/usr/local/cargo/registry" || exit 0
+    rm -rf sslocal.exe ssurl.exe
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && export LDFLAGS="-fuse-ld=lld -s" \
@@ -38,7 +38,7 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && cd /usr/local/cargo/bin || exit 1 \
     && strip sslocal ssmanager ssserver ssurl \
     && bsdtar --no-xattrs -a -cf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
-    rm -f sslocal ssmanager ssserver ssurl
+    rm -rf sslocal ssmanager ssserver ssurl "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS boringtun
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
