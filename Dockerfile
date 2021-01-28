@@ -51,6 +51,7 @@ RUN source '/root/.bashrc' \
 RUN export LDFLAGS="-s -fuse-ld=lld" \
     && env \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --git 'https://github.com/cloudflare/boringtun.git' --verbose \
+    && armv6-linux-musleabi-strip '/usr/local/cargo/bin/boringtun' \
     && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
