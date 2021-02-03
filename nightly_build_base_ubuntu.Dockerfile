@@ -22,11 +22,7 @@ ENV rust_nightly_date='2020-11-26' \
 #     RUST_TEST_THREADS=1
 # ENV CROSS_DOCKER_IN_DOCKER=true
 # ENV CROSS_CONTAINER_ENGINE=podman
-RUN apt-get update && apt-get -y --auto-remove -o APT::AutoRemove::RecommendsImportant=true purge \
-    musl-tools netbsd-curses gettext-tiny \
-    && apt-get -y --no-install-recommends reinstall \
-    gettext libc6-dev libncurses-dev ncurses-bin \
-    && apt-get -y --no-install-recommends install \
+RUN apt-get update && apt-get -y --no-install-recommends install \
     apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix file gettext git gpg gpg-agent libarchive-tools libedit-dev libltdl-dev libncurses-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools netbase ninja-build pkgconf util-linux \
     && apt-get -y full-upgrade \
     # && dpkg --add-architecture i386 \
