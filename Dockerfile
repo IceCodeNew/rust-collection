@@ -109,19 +109,6 @@ RUN source '/root/.bashrc' \
     && strip '/usr/local/cargo/bin/hyperfine'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS dog
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/ogham/dog/commits?per_page=1
-ARG dog_latest_commit_hash='d2d22fd8a4ba79027b5e2013d4ded3743dad5262'
-RUN source '/root/.bashrc' \
-    && apk update; apk --no-progress --no-cache add \
-    openssl-libs-static openssl-dev \
-    && apk --no-progress --no-cache upgrade \
-    && rm -rf /var/cache/apk/*; \
-    OPENSSL_STATIC=1 RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/ogham/dog.git' dog --verbose \
-    && strip '/usr/local/cargo/bin/dog'; \
-    rm -rf "/usr/local/cargo/registry" || exit 0
-
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fnm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/Schniz/fnm/releases/latest
@@ -138,6 +125,15 @@ ARG checksec_rs_latest_tag_name='v0.0.8'
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl checksec --verbose \
     && strip '/usr/local/cargo/bin/checksec'; \
+    rm -rf "/usr/local/cargo/registry" || exit 0
+
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS dog
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/ogham/dog/commits?per_page=1
+ARG dog_latest_commit_hash='d2d22fd8a4ba79027b5e2013d4ded3743dad5262'
+RUN source '/root/.bashrc' \
+    && OPENSSL_DIR=/build_root/.openssl OPENSSL_STATIC=1 RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/ogham/dog.git' dog --verbose \
+    && strip '/usr/local/cargo/bin/dog'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS just
@@ -172,9 +168,9 @@ COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=bat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hexyl /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hyperfine /usr/local/cargo/bin /usr/local/cargo/bin/
-COPY --from=dog /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fnm /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=checksec /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=dog /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=just /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=desed /usr/local/cargo/bin /usr/local/cargo/bin/
 RUN apk update; apk --no-progress --no-cache add \
