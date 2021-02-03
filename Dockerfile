@@ -136,6 +136,15 @@ RUN source '/root/.bashrc' \
     && strip '/usr/local/cargo/bin/dog'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS websocat
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/vi/websocat/commits?per_page=1
+ARG websocat_latest_commit_hash='4a421b7181aa5ab0101be68041f7c9cc9bdb2569'
+RUN source '/root/.bashrc' \
+    && OPENSSL_DIR=/build_root/.openssl OPENSSL_STATIC=1 RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --features=ssl --git 'https://github.com/vi/websocat.git' websocat --verbose \
+    && strip '/usr/local/cargo/bin/websocat'; \
+    rm -rf "/usr/local/cargo/registry" || exit 0
+
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS just
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/casey/just/commits?per_page=1
@@ -171,6 +180,7 @@ COPY --from=hyperfine /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fnm /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=checksec /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=dog /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=websocat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=just /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=desed /usr/local/cargo/bin /usr/local/cargo/bin/
 RUN apk update; apk --no-progress --no-cache add \
