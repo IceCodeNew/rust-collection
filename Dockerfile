@@ -54,6 +54,26 @@ RUN export LDFLAGS="-s -fuse-ld=lld" \
     && mv ./boringtun ./boringtun-linux-arm-musleabi5-x32; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS dog
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/ogham/dog/commits?per_page=1
+ARG dog_latest_commit_hash='d2d22fd8a4ba79027b5e2013d4ded3743dad5262'
+WORKDIR /usr/local/cargo/bin
+RUN source '/root/.bashrc' \
+    && OPENSSL_DIR=/build_root/.openssl OPENSSL_STATIC=1 RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/ogham/dog.git' dog --verbose \
+    && strip ./dog; \
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS websocat
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/vi/websocat/commits?per_page=1
+ARG websocat_latest_commit_hash='4a421b7181aa5ab0101be68041f7c9cc9bdb2569'
+WORKDIR /usr/local/cargo/bin
+RUN source '/root/.bashrc' \
+    && OPENSSL_DIR=/build_root/.openssl OPENSSL_STATIC=1 RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --features=ssl --git 'https://github.com/vi/websocat.git' websocat --verbose \
+    && strip ./websocat; \
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS rsign2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jedisct1/rsign2/commits?per_page=1
@@ -134,26 +154,6 @@ RUN source '/root/.bashrc' \
     && strip ./checksec; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS dog
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/ogham/dog/commits?per_page=1
-ARG dog_latest_commit_hash='d2d22fd8a4ba79027b5e2013d4ded3743dad5262'
-WORKDIR /usr/local/cargo/bin
-RUN source '/root/.bashrc' \
-    && OPENSSL_DIR=/build_root/.openssl OPENSSL_STATIC=1 RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/ogham/dog.git' dog --verbose \
-    && strip ./dog; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
-
-FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS websocat
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/vi/websocat/commits?per_page=1
-ARG websocat_latest_commit_hash='4a421b7181aa5ab0101be68041f7c9cc9bdb2569'
-WORKDIR /usr/local/cargo/bin
-RUN source '/root/.bashrc' \
-    && OPENSSL_DIR=/build_root/.openssl OPENSSL_STATIC=1 RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --features=ssl --git 'https://github.com/vi/websocat.git' websocat --verbose \
-    && strip ./websocat; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
-
 # FROM quay.io/icecodenew/rust-collection:build_base_alpine AS just
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/casey/just/commits?per_page=1
@@ -182,6 +182,8 @@ ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=shadowsocks-rust /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=boringtun /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=dog /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=websocat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=rsign2 /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=b3sum /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
@@ -190,8 +192,6 @@ COPY --from=hexyl /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hyperfine /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fnm /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=checksec /usr/local/cargo/bin /usr/local/cargo/bin/
-COPY --from=dog /usr/local/cargo/bin /usr/local/cargo/bin/
-COPY --from=websocat /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=just /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=desed /usr/local/cargo/bin /usr/local/cargo/bin/
 RUN apk update; apk --no-progress --no-cache add \
