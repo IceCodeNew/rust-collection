@@ -38,15 +38,15 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
     rm -f ./sslocal ./ssmanager ./ssserver ./ssurl; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS boringtun
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS boringtun
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
 ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/cloudflare/boringtun.git' --verbose \
     && strip ./boringtun \
-    && mv ./boringtun ./boringtun-linux-musl-x64
+    && mv ./boringtun ./boringtun-linux-gnu-x64
 RUN export LDFLAGS="-s -fuse-ld=lld" \
     && env \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --git 'https://github.com/cloudflare/boringtun.git' --verbose \

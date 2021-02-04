@@ -40,8 +40,8 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
-    --name "boringtun-linux-musl-x64" \
-    --file "/usr/local/cargo/bin/boringtun-linux-musl-x64"; \
+    --name "boringtun-linux-gnu-x64" \
+    --file "/usr/local/cargo/bin/boringtun-linux-gnu-x64"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
