@@ -2,165 +2,175 @@ FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS shadowsocks
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
+WORKDIR /usr/local/cargo/bin
 RUN LDFLAGS="-fuse-ld=lld -s" \
     && CXXFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
     && CFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
     && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=-crt-static,-avx2,-fma,-adx -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
-    && cd /usr/local/cargo/bin || exit 1 \
-    && strip ssmanager ssserver \
-    && bsdtar --no-xattrs -a -cf 4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz ssmanager ssserver; \
-    rm -f ssmanager ssserver
+    && strip ./ssmanager ./ssserver \
+    && bsdtar --no-xattrs -a -cf 4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz ./ssmanager ./ssserver; \
+    rm -f ./ssmanager ./ssserver
 RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
     && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx2,+fma,+adx" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
-    && cd /usr/local/cargo/bin || exit 1 \
-    && x86_64-w64-mingw32-strip sslocal.exe ssurl.exe \
-    && bsdtar --no-xattrs -a -cf ss-rust-win-gnu-x64.zip sslocal.exe ssurl.exe; \
-    rm -rf sslocal.exe ssurl.exe
+    && x86_64-w64-mingw32-strip ./sslocal.exe ./ssurl.exe \
+    && bsdtar --no-xattrs -a -cf ss-rust-win-gnu-x64.zip ./sslocal.exe ./ssurl.exe; \
+    rm -rf ./sslocal.exe ./ssurl.exe
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && export LDFLAGS="-fuse-ld=lld -s" \
     && env \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
-    && cd /usr/local/cargo/bin || exit 1 \
-    && armv6-linux-musleabi-strip sslocal ssurl \
-    && bsdtar --no-xattrs -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz sslocal ssurl; \
-    rm -f sslocal ssurl
+    && armv6-linux-musleabi-strip ./sslocal ./ssurl \
+    && bsdtar --no-xattrs -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz ./sslocal ./ssurl; \
+    rm -f ./sslocal ./ssurl
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && env \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+avx2,+fma,+adx -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-tunnel local-socks4 multi-threaded local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
-    && cd /usr/local/cargo/bin || exit 1 \
-    && strip sslocal ssmanager ssserver ssurl \
-    && bsdtar --no-xattrs -a -cf ss-rust-linux-gnu-x64.tar.xz sslocal ssmanager ssserver ssurl; \
-    rm -rf sslocal ssmanager ssserver ssurl "/usr/local/cargo/registry" || exit 0
+    && strip ./sslocal ./ssmanager ./ssserver ./ssurl \
+    && bsdtar --no-xattrs -a -cf ss-rust-linux-gnu-x64.tar.xz ./sslocal ./ssmanager ./ssserver ./ssurl; \
+    rm -rf ./sslocal ./ssmanager ./ssserver ./ssurl "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:nightly_build_base_ubuntu AS boringtun
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
 ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/cloudflare/boringtun.git' --verbose \
-    && strip '/usr/local/cargo/bin/boringtun' \
-    && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-musl-x64'
+    && strip ./boringtun \
+    && mv ./boringtun ./boringtun-linux-musl-x64
 RUN export LDFLAGS="-s -fuse-ld=lld" \
     && env \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --git 'https://github.com/cloudflare/boringtun.git' --verbose \
-    && armv6-linux-musleabi-strip '/usr/local/cargo/bin/boringtun' \
-    && mv '/usr/local/cargo/bin/boringtun' '/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32'; \
     rm -rf "/usr/local/cargo/registry" || exit 0
+    && armv6-linux-musleabi-strip ./boringtun \
+    && mv ./boringtun ./boringtun-linux-arm-musleabi5-x32; \
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS rsign2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jedisct1/rsign2/commits?per_page=1
 ARG rsign2_latest_commit_hash='79e058b7c18bcd519f160b5391c240549a0f5fdc'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/jedisct1/rsign2.git' --verbose \
-    && strip '/usr/local/cargo/bin/rsign'; \
+    && strip ./rsign; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest
 ARG b3sum_latest_tag_name='0.3.7'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl b3sum --verbose \
-    && strip '/usr/local/cargo/bin/b3sum'; \
+    && strip ./b3sum; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/fd/releases/latest
 ARG fd_latest_tag_name='v8.1.1'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl fd-find --verbose \
-    && strip '/usr/local/cargo/bin/fd'; \
+    && strip ./fd; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS bat
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/bat/releases/latest
 ARG bat_latest_tag_name='v0.16.0'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --locked bat --verbose \
-    && strip '/usr/local/cargo/bin/bat'; \
+    && strip ./bat; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS hexyl
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/hexyl/releases/latest
 ARG hexyl_latest_tag_name='v0.8.0'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hexyl --verbose \
-    && strip '/usr/local/cargo/bin/hexyl'; \
+    && strip ./hexyl; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS hyperfine
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/hyperfine/releases/latest
 ARG hyperfine_latest_tag_name='v1.11.0'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hyperfine --verbose \
-    && strip '/usr/local/cargo/bin/hyperfine'; \
+    && strip ./hyperfine; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fnm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/Schniz/fnm/releases/latest
 ARG fnm_latest_tag_name='v1.22.6'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" --verbose \
-    && strip '/usr/local/cargo/bin/fnm'; \
+    && strip ./fnm; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS checksec
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/etke/checksec.rs/releases/latest
 ARG checksec_rs_latest_tag_name='v0.0.8'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl checksec --verbose \
-    && strip '/usr/local/cargo/bin/checksec'; \
+    && strip ./checksec; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS dog
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/ogham/dog/commits?per_page=1
 ARG dog_latest_commit_hash='d2d22fd8a4ba79027b5e2013d4ded3743dad5262'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && OPENSSL_DIR=/build_root/.openssl OPENSSL_STATIC=1 RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/ogham/dog.git' dog --verbose \
-    && strip '/usr/local/cargo/bin/dog'; \
+    && strip ./dog; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS websocat
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/vi/websocat/commits?per_page=1
 ARG websocat_latest_commit_hash='4a421b7181aa5ab0101be68041f7c9cc9bdb2569'
+WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && OPENSSL_DIR=/build_root/.openssl OPENSSL_STATIC=1 RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --features=ssl --git 'https://github.com/vi/websocat.git' websocat --verbose \
-    && strip '/usr/local/cargo/bin/websocat'; \
+    && strip ./websocat; \
     rm -rf "/usr/local/cargo/registry" || exit 0
 
 # FROM quay.io/icecodenew/rust-collection:build_base_alpine AS just
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/casey/just/commits?per_page=1
 # ARG just_latest_commit_hash='d43241a781aa3abd9b76dc7baf030593bb61b689'
+# WORKDIR /usr/local/cargo/bin
 # RUN source '/root/.bashrc' \
 #     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/casey/just.git' just --verbose \
-#     && strip '/usr/local/cargo/bin/just'; \
+#     && strip ./just; \
 #     rm -rf "/usr/local/cargo/registry" || exit 0
 
 # FROM quay.io/icecodenew/rust-collection:build_base_alpine AS desed
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/SoptikHa2/desed/releases/latest
 # ARG desed_latest_tag_name='v1.2.0'
+# WORKDIR /usr/local/cargo/bin
 # RUN source '/root/.bashrc' \
 #     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl desed --verbose \
-#     && strip '/usr/local/cargo/bin/desed'; \
+#     && strip ./desed; \
 #     rm -rf "/usr/local/cargo/registry" || exit 0
 
 FROM quay.io/icecodenew/alpine:latest AS collection
