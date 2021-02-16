@@ -74,23 +74,23 @@ RUN source '/root/.bashrc' \
     && strip ./websocat; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS rsign2
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS rsign2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jedisct1/rsign2/commits?per_page=1
 ARG rsign2_latest_commit_hash='79e058b7c18bcd519f160b5391c240549a0f5fdc'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/jedisct1/rsign2.git' --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/jedisct1/rsign2.git' --verbose \
     && strip ./rsign; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS b3sum
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest
 ARG b3sum_latest_tag_name='0.3.7'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl b3sum --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu b3sum --verbose \
     && strip ./b3sum; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
