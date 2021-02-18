@@ -10,11 +10,6 @@ ENV rust_nightly_date='2020-11-26' \
     PKG_CONFIG_ALL_STATIC=true \
     X86_64_UNKNOWN_LINUX_GNU_OPENSSL_DIR=/build_root/.openssl/ \
     X86_64_UNKNOWN_LINUX_GNU_OPENSSL_STATIC=1 \
-    X86_64_UNKNOWN_LINUX_MUSL_OPENSSL_DIR=/build_root/.openssl/ \
-    X86_64_UNKNOWN_LINUX_MUSL_OPENSSL_STATIC=1 \
-    CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=x86_64-linux-musl-gcc \
-    CC_x86_64_unknown_linux_musl=x86_64-linux-musl-gcc \
-    CXX_x86_64_unknown_linux_musl=x86_64-linux-musl-g++ \
     CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc \
     CARGO_TARGET_X86_64_PC_WINDOWS_GNU_RUNNER=wine \
     CC_x86_64_pc_windows_gnu=x86_64-w64-mingw32-gcc-posix \
@@ -45,13 +40,13 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && curl -OJ --compressed "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" \
     && chmod +x ./rustup-init \
     # && ./rustup-init -y -c rust-src -t x86_64-unknown-linux-gnu x86_64-unknown-linux-musl x86_64-pc-windows-gnu armv7-unknown-linux-musleabi --default-host x86_64-unknown-linux-gnu --profile minimal --default-toolchain nightly --no-modify-path \
-    && ./rustup-init -y -t x86_64-unknown-linux-gnu x86_64-unknown-linux-musl x86_64-pc-windows-gnu armv7-unknown-linux-musleabi --default-host x86_64-unknown-linux-gnu --profile minimal --default-toolchain nightly --no-modify-path \
+    && ./rustup-init -y -t x86_64-unknown-linux-gnu x86_64-pc-windows-gnu armv7-unknown-linux-musleabi --default-host x86_64-unknown-linux-gnu --profile minimal --default-toolchain nightly --no-modify-path \
     && rm ./rustup-init \
     && chmod -R a+w $RUSTUP_HOME $CARGO_HOME \
     # && cargo install xargo \
     # && cargo install cross; \
     # rm -rf "/usr/local/cargo/registry" || exit 0 \
-    ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.x86_64-unknown-linux-musl
-    && curl -sS "https://musl.cc/x86_64-linux-musl-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1 \
+    # ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.x86_64-unknown-linux-musl
+    # && curl -sS "https://musl.cc/x86_64-linux-musl-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1 \
     ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.arm-unknown-linux-musleabi
     && curl -sS "https://musl.cc/armv6-linux-musleabi-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1
