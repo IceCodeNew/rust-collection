@@ -6,7 +6,7 @@ ENV rust_nightly_date='2020-11-26' \
     RUST_VERSION=1.48.0 \
     RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
-    PATH=/usr/local/cargo/bin:/usr/local/x86_64-linux-musl-cross/bin:/usr/local/armv6-linux-musleabi-cross/bin:$PATH \
+    PATH=/usr/local/cargo/bin:$PATH \
     PKG_CONFIG_ALL_STATIC=true \
     X86_64_UNKNOWN_LINUX_GNU_OPENSSL_DIR=/build_root/.openssl/ \
     X86_64_UNKNOWN_LINUX_GNU_OPENSSL_STATIC=1 \
@@ -52,6 +52,6 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     # && cargo install cross; \
     # rm -rf "/usr/local/cargo/registry" || exit 0 \
     ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.x86_64-unknown-linux-musl
-    && curl -sS "https://musl.cc/x86_64-linux-musl-cross.tgz" | bsdtar -xf- -C /usr/local \
+    && curl -sS "https://musl.cc/x86_64-linux-musl-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1 \
     ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.arm-unknown-linux-musleabi
-    && curl -sS "https://musl.cc/armv6-linux-musleabi-cross.tgz" | bsdtar -xf- -C /usr/local
+    && curl -sS "https://musl.cc/armv6-linux-musleabi-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1
