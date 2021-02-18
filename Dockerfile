@@ -94,7 +94,7 @@ RUN source '/root/.bashrc' \
     && strip ./b3sum; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS fd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/fd/releases/latest
 ARG fd_latest_tag_name='v8.1.1'
@@ -104,7 +104,7 @@ RUN source '/root/.bashrc' \
     && strip ./fd; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS bat
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS bat
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/bat/releases/latest
 ARG bat_latest_tag_name='v0.16.0'
@@ -114,7 +114,7 @@ RUN source '/root/.bashrc' \
     && strip ./bat; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS hexyl
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS hexyl
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/hexyl/releases/latest
 ARG hexyl_latest_tag_name='v0.8.0'
@@ -124,7 +124,7 @@ RUN source '/root/.bashrc' \
     && strip ./hexyl; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS hyperfine
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS hyperfine
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/hyperfine/releases/latest
 ARG hyperfine_latest_tag_name='v1.11.0'
@@ -134,7 +134,7 @@ RUN source '/root/.bashrc' \
     && strip ./hyperfine; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fnm
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS fnm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/Schniz/fnm/releases/latest
 ARG fnm_latest_tag_name='v1.22.6'
@@ -144,7 +144,7 @@ RUN source '/root/.bashrc' \
     && strip ./fnm; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS checksec
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS checksec
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/etke/checksec.rs/releases/latest
 ARG checksec_rs_latest_tag_name='v0.0.8'
@@ -154,7 +154,7 @@ RUN source '/root/.bashrc' \
     && strip ./checksec; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-# FROM quay.io/icecodenew/rust-collection:build_base_alpine AS just
+# FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS just
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/casey/just/commits?per_page=1
 # ARG just_latest_commit_hash='d43241a781aa3abd9b76dc7baf030593bb61b689'
@@ -164,7 +164,7 @@ RUN source '/root/.bashrc' \
 #     && strip ./just; \
 #     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
 
-# FROM quay.io/icecodenew/rust-collection:build_base_alpine AS desed
+# FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS desed
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/SoptikHa2/desed/releases/latest
 # ARG desed_latest_tag_name='v1.2.0'
