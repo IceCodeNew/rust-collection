@@ -94,6 +94,16 @@ RUN source '/root/.bashrc' \
     && strip ./b3sum; \
     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS ripgrep
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/BurntSushi/ripgrep/commits?per_page=1
+ARG ripgrep_latest_commit_hash='c5ea5a13df8de5b7823e5ecad00bad1c4c4c854d'
+WORKDIR /usr/local/cargo/bin
+RUN source '/root/.bashrc' \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --features 'pcre2' --git 'https://github.com/BurntSushi/ripgrep.git' ripgrep --verbose \
+    && strip ./rg; \
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
+
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/fd/releases/latest
@@ -186,6 +196,7 @@ COPY --from=dog /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=websocat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=rsign2 /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=b3sum /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=ripgrep /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=bat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hexyl /usr/local/cargo/bin /usr/local/cargo/bin/
