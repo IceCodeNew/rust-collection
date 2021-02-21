@@ -102,11 +102,9 @@ WORKDIR /git/ripgrep
 RUN source '/root/.bashrc' \
     && git_clone 'https://github.com/BurntSushi/ripgrep.git' '/git/ripgrep' \
     && cargo update --verbose || exit 1; \
-    if ! ( RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose \
-    && cargo test --bins ); \
+    if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
     then git reset --hard "$ripgrep_latest_commit_hash" \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose \
-    && cargo test --bins; \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
     fi; \
     strip -o /usr/local/cargo/bin/rg ./target/x86_64-unknown-linux-gnu/release/rg \
     && rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup '/git/ripgrep' "CARGO_HOME/git" "CARGO_HOME/registry"
