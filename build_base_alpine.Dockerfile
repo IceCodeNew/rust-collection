@@ -30,5 +30,5 @@ RUN apk update; apk --no-progress --no-cache add \
     ./rustup-init -y -c llvm-tools-preview -t x86_64-unknown-linux-musl --default-host x86_64-unknown-linux-musl --default-toolchain stable --profile minimal --no-modify-path; \
     rm ./rustup-init; \
     chmod -R a+w $RUSTUP_HOME $CARGO_HOME
-RUN rustup toolchain install nightly-x86_64-unknown-linux-musl --allow-downgrade --profile minimal --component llvm-tools-preview; \
-    rustup +nightly target add x86_64-unknown-linux-musl
+# RUN rustup toolchain install nightly-x86_64-unknown-linux-musl --allow-downgrade --profile minimal --component llvm-tools-preview; \
+#     rustup +nightly target add x86_64-unknown-linux-musl
