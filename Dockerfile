@@ -36,7 +36,7 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && strip ./sslocal ./ssmanager ./ssserver ./ssurl \
     && bsdtar --no-xattrs -a -cf ss-rust-linux-gnu-x64.tar.xz ./sslocal ./ssmanager ./ssserver ./ssurl; \
     rm -f ./sslocal ./ssmanager ./ssserver ./ssurl; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS boringtun
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -52,7 +52,7 @@ RUN export LDFLAGS="-s -fuse-ld=lld" \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --git 'https://github.com/cloudflare/boringtun.git' --verbose \
     && armv6-linux-musleabi-strip ./boringtun \
     && mv ./boringtun ./boringtun-linux-arm-musleabi5-x32; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS dog
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -62,7 +62,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/ogham/dog.git' dog --verbose \
     && strip ./dog; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS websocat
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -72,7 +72,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --features=ssl --git 'https://github.com/vi/websocat.git' websocat --verbose \
     && strip ./websocat; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS rsign2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -82,7 +82,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/jedisct1/rsign2.git' --verbose \
     && strip ./rsign; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -92,7 +92,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu b3sum --verbose \
     && strip ./b3sum; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -102,7 +102,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl fd-find --verbose \
     && strip ./fd; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS bat
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -112,7 +112,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --locked bat --verbose \
     && strip ./bat; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS hexyl
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -122,7 +122,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hexyl --verbose \
     && strip ./hexyl; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS hyperfine
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -132,7 +132,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hyperfine --verbose \
     && strip ./hyperfine; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fnm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -142,7 +142,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" --verbose \
     && strip ./fnm; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS checksec
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -152,7 +152,7 @@ WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl checksec --verbose \
     && strip ./checksec; \
-    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+    rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 # FROM quay.io/icecodenew/rust-collection:build_base_alpine AS just
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -162,7 +162,7 @@ RUN source '/root/.bashrc' \
 # RUN source '/root/.bashrc' \
 #     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/casey/just.git' just --verbose \
 #     && strip ./just; \
-#     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+#     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 # FROM quay.io/icecodenew/rust-collection:build_base_alpine AS desed
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -172,7 +172,7 @@ RUN source '/root/.bashrc' \
 # RUN source '/root/.bashrc' \
 #     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl desed --verbose \
 #     && strip ./desed; \
-#     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/registry" || exit 0
+#     rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
 
 FROM quay.io/icecodenew/alpine:latest AS collection
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
