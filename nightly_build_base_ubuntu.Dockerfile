@@ -22,7 +22,7 @@ ENV rust_nightly_date='2020-11-26' \
 # ENV CROSS_DOCKER_IN_DOCKER=true
 # ENV CROSS_CONTAINER_ENGINE=podman
 RUN apt-get update && apt-get -y --no-install-recommends install \
-    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix file gettext git gpg gpg-agent libarchive-tools libedit-dev libltdl-dev libncurses-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools netbase ninja-build pkgconf util-linux \
+    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix file gettext git gpg gpg-agent libarchive-tools libedit-dev libltdl-dev liblzma-dev libncurses-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools netbase ninja-build pkgconf util-linux \
     && apt-get -y full-upgrade \
     # && dpkg --add-architecture i386 \
     # && curl -L https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
@@ -43,9 +43,10 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && ./rustup-init -y -t x86_64-unknown-linux-gnu x86_64-pc-windows-gnu armv7-unknown-linux-musleabi --default-host x86_64-unknown-linux-gnu --profile minimal --default-toolchain nightly --no-modify-path \
     && rm ./rustup-init \
     && chmod -R a+w $RUSTUP_HOME $CARGO_HOME \
+    && cargo install cargo-deb \
     # && cargo install xargo \
-    # && cargo install cross; \
-    # rm -rf "/usr/local/cargo/registry" || exit 0 \
+    # && cargo install cross \
+    && rm -rf "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0 \
     # ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.x86_64-unknown-linux-musl
     # && curl -sS "https://musl.cc/x86_64-linux-musl-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1 \
     ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.arm-unknown-linux-musleabi
