@@ -12,7 +12,7 @@ RUN source '/root/.bashrc' \
     fi; \
     pushd './target/x86_64-unknown-linux-gnu/release/' || exit 1; \
     strip ./sslocal ./ssmanager ./ssserver ./ssurl \
-    && bsdtar --no-xattrs -a -cf "CARGO_HOME/bin/ss-rust-linux-gnu-x64.tar.xz" ./sslocal ./ssmanager ./ssserver ./ssurl \
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz" ./sslocal ./ssmanager ./ssserver ./ssurl \
     && popd || exit 1; \
     rm -rf './target/x86_64-unknown-linux-gnu/release/' \
     && dirs -c
@@ -24,7 +24,7 @@ RUN LDFLAGS="-fuse-ld=lld -s" \
     && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=-crt-static,-avx2,-fma,-adx -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded mimalloc" --release --verbose \
     && pushd './target/x86_64-unknown-linux-gnu/release/' || exit 1; \
     strip ./ssmanager ./ssserver \
-    && bsdtar --no-xattrs -a -cf "CARGO_HOME/bin/4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz" ./ssmanager ./ssserver \
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz" ./ssmanager ./ssserver \
     && popd || exit 1; \
     dirs -c
 RUN LDFLAGS="-s" \
@@ -35,7 +35,7 @@ RUN LDFLAGS="-s" \
     && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx2,+fma,+adx" cargo build -j "$(nproc)" --bins --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded" --release --verbose \
     && pushd './target/x86_64-pc-windows-gnu/release/' || exit 1; \
     x86_64-w64-mingw32-strip ./sslocal.exe ./ssurl.exe \
-    && bsdtar --no-xattrs -a -cf "CARGO_HOME/bin/ss-rust-win-gnu-x64.zip" ./sslocal.exe ./ssurl.exe \
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-win-gnu-x64.zip" ./sslocal.exe ./ssurl.exe \
     && popd || exit 1; \
     dirs -c
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
@@ -45,7 +45,7 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo build -j "$(nproc)" --bins --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded local-redir" --release --verbose \
     && pushd './target/armv7-unknown-linux-musleabi/release/' || exit 1; \
     armv6-linux-musleabi-strip ./sslocal ./ssurl \
-    && bsdtar --no-xattrs -a -cf "CARGO_HOME/bin/ss-rust-linux-arm-musleabi5-x32.tar.gz" ./sslocal ./ssurl \
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-arm-musleabi5-x32.tar.gz" ./sslocal ./ssurl \
     && popd || exit 1; \
     dirs -c \
     && rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup '/git/ss-rust' "CARGO_HOME/git" "CARGO_HOME/registry"
