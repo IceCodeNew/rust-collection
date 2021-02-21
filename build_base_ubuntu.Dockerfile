@@ -41,9 +41,6 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && curl -sSOJ --compressed "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" \
     && chmod +x ./rustup-init \
     && ./rustup-init -y -c llvm-tools-preview -t x86_64-unknown-linux-gnu x86_64-pc-windows-gnu armv7-unknown-linux-musleabi --default-host x86_64-unknown-linux-gnu --default-toolchain stable --profile minimal --no-modify-path \
-    && rustup toolchain install nightly-x86_64-unknown-linux-gnu --allow-downgrade --profile minimal --component llvm-tools-preview \
-    # && rustup component add --toolchain nightly --target x86_64-unknown-linux-gnu reproducible-artifacts \
-    && rustup +nightly target add x86_64-unknown-linux-gnu x86_64-pc-windows-gnu armv7-unknown-linux-musleabi \
     && rm ./rustup-init \
     && chmod -R a+w $RUSTUP_HOME $CARGO_HOME \
     && cargo install cargo-deb \
@@ -55,3 +52,6 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     # && curl -sS "https://musl.cc/x86_64-linux-musl-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1 \
     ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.arm-unknown-linux-musleabi
     && curl -sS "https://musl.cc/armv6-linux-musleabi-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1
+RUN rustup toolchain install nightly-x86_64-unknown-linux-gnu --allow-downgrade --profile minimal --component llvm-tools-preview \
+    # && rustup component add --toolchain nightly --target x86_64-unknown-linux-gnu reproducible-artifacts \
+    && rustup +nightly target add x86_64-unknown-linux-gnu x86_64-pc-windows-gnu armv7-unknown-linux-musleabi
