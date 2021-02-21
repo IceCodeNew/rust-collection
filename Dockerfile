@@ -31,9 +31,12 @@ RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && export LDFLAGS CXXFLAGS CFLAGS \
-    && env \
-    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx2,+fma,+adx" cargo build -j "$(nproc)" --bins --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded" --release --verbose \
-    && pushd './target/x86_64-pc-windows-gnu/release/' || exit 1; \
+    && env; \
+    if ! RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx2,+fma,+adx" cargo build -j "$(nproc)" --bins --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded" --release --verbose; \
+    then git reset --hard "$shadowsocks_rust_latest_commit_hash" \
+    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx2,+fma,+adx" cargo build -j "$(nproc)" --bins --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded" --release --verbose; \
+    fi; \
+    pushd './target/x86_64-pc-windows-gnu/release/' || exit 1; \
     x86_64-w64-mingw32-strip ./sslocal.exe ./ssurl.exe \
     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-win-gnu-x64.zip" ./sslocal.exe ./ssurl.exe \
     && popd || exit 1; \
@@ -41,9 +44,12 @@ RUN LDFLAGS="-s" \
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && export LDFLAGS="-fuse-ld=lld -s" \
-    && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo build -j "$(nproc)" --bins --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded local-redir" --release --verbose \
-    && pushd './target/armv7-unknown-linux-musleabi/release/' || exit 1; \
+    && env; \
+    if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo build -j "$(nproc)" --bins --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded local-redir" --release --verbose; \
+    then git reset --hard "$shadowsocks_rust_latest_commit_hash" \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo build -j "$(nproc)" --bins --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded local-redir" --release --verbose; \
+    fi; \
+    pushd './target/armv7-unknown-linux-musleabi/release/' || exit 1; \
     armv6-linux-musleabi-strip ./sslocal ./ssurl \
     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-arm-musleabi5-x32.tar.gz" ./sslocal ./ssurl \
     && popd || exit 1; \
