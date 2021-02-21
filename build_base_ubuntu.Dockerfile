@@ -26,7 +26,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix file gettext git gpg gpg-agent libarchive-tools libedit-dev libltdl-dev liblzma-dev libncurses-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools netbase ninja-build pkgconf util-linux \
     && apt-get -y full-upgrade \
     # && dpkg --add-architecture i386 \
-    # && curl -L https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
+    # && curl -sSL https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
     # && echo 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' > /etc/apt/sources.list.d/wine.develop.list \
     # && apt-get update && apt-get -y --install-recommends install \
     # winehq-devel \
@@ -38,7 +38,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix \
     && source '/root/.bashrc' \
     ### https://doc.rust-lang.org/nightly/rustc/platform-support.html
-    && curl -OJ --compressed "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" \
+    && curl -sSOJ --compressed "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" \
     && chmod +x ./rustup-init \
     && ./rustup-init -y -c llvm-tools-preview -t x86_64-unknown-linux-gnu x86_64-pc-windows-gnu armv7-unknown-linux-musleabi --default-host x86_64-unknown-linux-gnu --default-toolchain stable --profile minimal --no-modify-path \
     && rustup toolchain install nightly-x86_64-unknown-linux-gnu --allow-downgrade --profile minimal --component llvm-tools-preview \

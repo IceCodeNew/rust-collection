@@ -22,10 +22,10 @@ RUN apk update; apk --no-progress --no-cache add \
     curl -sSLR4q --retry 5 --retry-delay 10 --retry-max-time 60 --connect-timeout 60 -m 600 -o '/root/.bashrc' "https://raw.githubusercontent.com/IceCodeNew/myrc/${bashrc_latest_commit_hash}/.bashrc"; \
     unset -f curl; \
     eval 'curl() { /usr/bin/curl -LRq --retry 5 --retry-delay 10 --retry-max-time 60 "$@"; }'; \
-    curl -4q -o '/usr/bin/checksec' "https://raw.githubusercontent.com/slimm609/checksec.sh/${checksec_sh_latest_tag_name}/checksec"; \
+    curl -sS4q -o '/usr/bin/checksec' "https://raw.githubusercontent.com/slimm609/checksec.sh/${checksec_sh_latest_tag_name}/checksec"; \
     chmod +x '/usr/bin/checksec'; \
     ### https://doc.rust-lang.org/nightly/rustc/platform-support.html
-    curl -OJ --compressed "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-musl/rustup-init"; \
+    curl -sSOJ --compressed "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-musl/rustup-init"; \
     chmod +x ./rustup-init; \
     ./rustup-init -y -c llvm-tools-preview -t x86_64-unknown-linux-musl --default-host x86_64-unknown-linux-musl --default-toolchain stable --profile minimal --no-modify-path; \
     rustup toolchain install nightly-x86_64-unknown-linux-musl --allow-downgrade --profile minimal --component llvm-tools-preview; \
