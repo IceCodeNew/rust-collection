@@ -98,11 +98,18 @@ FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS ripgrep
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BurntSushi/ripgrep/commits?per_page=1
 ARG ripgrep_latest_commit_hash='c5ea5a13df8de5b7823e5ecad00bad1c4c4c854d'
-WORKDIR /usr/local/cargo/bin
+WORKDIR /git/ripgrep
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --features 'pcre2' --git 'https://github.com/BurntSushi/ripgrep.git' ripgrep --verbose \
-    && strip ./rg \
-    && rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry"
+    && git_clone 'https://github.com/BurntSushi/ripgrep.git' '/git/ripgrep' \
+    && cargo update --verbose || exit 1; \
+    if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose \
+    && cargo test --bins; \
+    then git reset --hard "$ripgrep_latest_commit_hash" \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose \
+    && cargo test --bins; \
+    fi; \
+    strip -o /usr/local/cargo/bin/rg ./target/x86_64-unknown-linux-gnu/release/rg \
+    && rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup '/git/ripgrep' "CARGO_HOME/git" "CARGO_HOME/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
