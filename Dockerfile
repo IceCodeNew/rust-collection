@@ -62,10 +62,10 @@ WORKDIR /git/cfnts
 RUN source '/root/.bashrc' \
     && git_clone 'https://github.com/cloudflare/cfnts.git' '/git/cfnts' \
     && cargo update --verbose || exit 1; \
-    if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+    if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+aes,+ssse3 -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
     then git reset --hard "$cfnts_latest_commit_hash" \
     && echo "$ git reset --hard $shadowsocks_rust_latest_commit_hash" \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+aes,+ssse3 -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
     fi; \
     strip -o "CARGO_HOME/bin/cfnts" ./target/x86_64-unknown-linux-gnu/release/cfnts \
     && rm -rf '/git/cfnts' "CARGO_HOME/bin/cargo" "CARGO_HOME/bin/cargo-clippy" "CARGO_HOME/bin/cargo-deb" "CARGO_HOME/bin/cargo-fmt" "CARGO_HOME/bin/cargo-miri" "CARGO_HOME/bin/clippy-driver" "CARGO_HOME/bin/rls" "CARGO_HOME/bin/rust-gdb" "CARGO_HOME/bin/rust-lldb" "CARGO_HOME/bin/rustc" "CARGO_HOME/bin/rustdoc" "CARGO_HOME/bin/rustfmt" "CARGO_HOME/bin/rustup" "CARGO_HOME/git" "CARGO_HOME/registry"
