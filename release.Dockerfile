@@ -66,6 +66,13 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --tag "$tag_name" \
     --name "ripgrep" \
     --file "/usr/local/cargo/bin/rg"; \
+    # export pcre2_deb_filename="$(grep -E 'pcre2_.+_amd64.deb' <(find /build_root -maxdepth 1 -type f -printf '%f\n'))"; \
+    # github-release upload \
+    # --user IceCodeNew \
+    # --repo rust-collection \
+    # --tag "$tag_name" \
+    # --name "$pcre2_deb_filename" \
+    # --file "/build_root/$pcre2_deb_filename"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
