@@ -107,6 +107,7 @@ RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
     fi; \
     strip -o /usr/local/cargo/bin/rg ./target/x86_64-unknown-linux-gnu/release/rg \
+    && /usr/local/cargo/bin/rg --pcre2-version \
     && rm -rf ./cargo ./cargo-clippy ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup '/git/ripgrep' "CARGO_HOME/git" "CARGO_HOME/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
