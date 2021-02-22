@@ -109,7 +109,7 @@ RUN source '/root/.bashrc' \
     fi; \
     strip -o /usr/local/cargo/bin/rg ./target/x86_64-unknown-linux-gnu/release/rg \
     && /usr/local/cargo/bin/rg --pcre2-version \
-    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup '/git/ripgrep' "CARGO_HOME/git" "CARGO_HOME/registry"
+    && rm -rf '/git/ripgrep' "CARGO_HOME/bin/cargo" "CARGO_HOME/bin/cargo-clippy" "CARGO_HOME/bin/cargo-deb" "CARGO_HOME/bin/cargo-fmt" "CARGO_HOME/bin/cargo-miri" "CARGO_HOME/bin/clippy-driver" "CARGO_HOME/bin/rls" "CARGO_HOME/bin/rust-gdb" "CARGO_HOME/bin/rust-lldb" "CARGO_HOME/bin/rustc" "CARGO_HOME/bin/rustdoc" "CARGO_HOME/bin/rustfmt" "CARGO_HOME/bin/rustup" "CARGO_HOME/git" "CARGO_HOME/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
