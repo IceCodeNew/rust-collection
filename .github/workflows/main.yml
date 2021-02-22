@@ -39,6 +39,9 @@ jobs:
           echo "boringtun_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "cfnts_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/cloudflare/cfnts/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "rsign2_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/jedisct1/rsign2/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -93,6 +96,7 @@ jobs:
           git reset --hard origin/master
           sed -i -E "s/^ARG shadowsocks_rust_latest_commit_hash=.+/ARG shadowsocks_rust_latest_commit_hash=${shadowsocks_rust_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG boringtun_latest_commit_hash=.+/ARG boringtun_latest_commit_hash=${boringtun_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG cfnts_latest_commit_hash=.+/ARG cfnts_latest_commit_hash=${cfnts_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG rsign2_latest_commit_hash=.+/ARG rsign2_latest_commit_hash=${rsign2_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG b3sum_latest_tag_name=.+/ARG b3sum_latest_tag_name=${b3sum_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG ripgrep_latest_commit_hash=.+/ARG ripgrep_latest_commit_hash=${ripgrep_latest_commit_hash:?empty value}/" Dockerfile

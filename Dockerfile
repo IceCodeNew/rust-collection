@@ -54,6 +54,22 @@ RUN export LDFLAGS="-s -fuse-ld=lld" \
     && rm -f ./boringtun \
     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "CARGO_HOME/git" "CARGO_HOME/registry"
 
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS cfnts
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/cloudflare/cfnts/commits?per_page=1
+ARG cfnts_latest_commit_hash='3d9c673e1b7abbad1bd691ef7c1608582e8371a6'
+WORKDIR /git/cfnts
+RUN source '/root/.bashrc' \
+    && git_clone 'https://github.com/cloudflare/cfnts.git' '/git/cfnts' \
+    && cargo update --verbose || exit 1; \
+    if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+    then git reset --hard "$cfnts_latest_commit_hash" \
+    && echo "$ git reset --hard $shadowsocks_rust_latest_commit_hash" \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+    fi; \
+    strip -o "CARGO_HOME/bin/cfnts" ./target/x86_64-unknown-linux-gnu/release/cfnts \
+    && rm -rf '/git/cfnts' "CARGO_HOME/bin/cargo" "CARGO_HOME/bin/cargo-clippy" "CARGO_HOME/bin/cargo-deb" "CARGO_HOME/bin/cargo-fmt" "CARGO_HOME/bin/cargo-miri" "CARGO_HOME/bin/clippy-driver" "CARGO_HOME/bin/rls" "CARGO_HOME/bin/rust-gdb" "CARGO_HOME/bin/rust-lldb" "CARGO_HOME/bin/rustc" "CARGO_HOME/bin/rustdoc" "CARGO_HOME/bin/rustfmt" "CARGO_HOME/bin/rustup" "CARGO_HOME/git" "CARGO_HOME/registry"
+
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS dog
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/ogham/dog/commits?per_page=1
@@ -199,6 +215,7 @@ ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=shadowsocks-rust /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=boringtun /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=cfnts /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=dog /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=websocat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=rsign2 /usr/local/cargo/bin /usr/local/cargo/bin/
