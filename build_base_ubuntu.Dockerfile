@@ -43,7 +43,7 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && rm ./rustup-init \
     && chmod -R a+w $RUSTUP_HOME $CARGO_HOME \
     && cargo install cargo-deb \
-    && cargo install cargo-audit --features=fix \
+    # && cargo install cargo-audit --features=fix \
     # && cargo install xargo \
     # && cargo install cross \
     && rm -rf "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0 \
