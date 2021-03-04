@@ -115,7 +115,7 @@ jobs:
           git rm got_github_release.sh release.Dockerfile build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
-          git push -f -u origin release
+          git push -f origin HEAD:release
       - name: Force push `build_base` branch
         run: |
           git config --local user.name "actions"
@@ -128,4 +128,4 @@ jobs:
           git rm got_github_release.sh Dockerfile release.Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
-          git push -f -u origin build_base
+          git push -f origin HEAD:build_base
