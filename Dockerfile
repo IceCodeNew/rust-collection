@@ -97,7 +97,7 @@ ARG rsign2_latest_commit_hash='79e058b7c18bcd519f160b5391c240549a0f5fdc'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/jedisct1/rsign2.git' --verbose \
-    && strip ./rsign
+    && mv ./rsign ./rsign-stripped
 RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
@@ -105,7 +105,8 @@ RUN LDFLAGS="-s" \
     && env \
     && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --git 'https://github.com/jedisct1/rsign2.git' --verbose \
     && x86_64-w64-mingw32-strip ./rsign.exe \
-    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+    && strip -p -o ./rsign ./rsign-stripped \
+    && rm -rf ./rsign-stripped ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -114,7 +115,7 @@ ARG b3sum_latest_tag_name='0.3.7'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu b3sum --verbose \
-    && strip ./b3sum
+    && mv ./b3sum ./b3sum-stripped
 RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
@@ -122,7 +123,8 @@ RUN LDFLAGS="-s" \
     && env \
     && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu b3sum --verbose \
     && x86_64-w64-mingw32-strip ./b3sum.exe \
-    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+    && strip -p -o ./b3sum ./b3sum-stripped \
+    && rm -rf ./b3sum-stripped ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS ripgrep
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -188,7 +190,7 @@ ARG fnm_latest_tag_name='v1.22.6'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" --verbose \
-    && strip ./fnm
+    && mv ./fnm ./fnm-stripped
 RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
@@ -196,7 +198,8 @@ RUN LDFLAGS="-s" \
     && env \
     && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" --verbose \
     && x86_64-w64-mingw32-strip ./fnm.exe \
-    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+    && strip -p -o ./fnm ./fnm-stripped \
+    && rm -rf ./fnm-stripped ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS checksec
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
