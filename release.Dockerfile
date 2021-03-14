@@ -58,8 +58,20 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
+    --name "rsign.exe" \
+    --file "/usr/local/cargo/bin/rsign.exe"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
     --name "b3sum" \
     --file "/usr/local/cargo/bin/b3sum"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
+    --name "b3sum.exe" \
+    --file "/usr/local/cargo/bin/b3sum.exe"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
@@ -103,6 +115,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --tag "$tag_name" \
     --name "fnm" \
     --file "/usr/local/cargo/bin/fnm"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
+    --name "fnm.exe" \
+    --file "/usr/local/cargo/bin/fnm.exe"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
