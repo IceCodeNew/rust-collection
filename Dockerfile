@@ -190,16 +190,8 @@ ARG fnm_latest_tag_name='v1.22.6'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" --verbose \
-    && mv ./fnm ./fnm-stripped
-RUN LDFLAGS="-s" \
-    && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
-    && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
-    && export LDFLAGS CXXFLAGS CFLAGS \
-    && env \
-    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" --verbose \
-    && x86_64-w64-mingw32-strip ./fnm.exe \
-    && strip -p -o ./fnm ./fnm-stripped \
-    && rm -rf ./fnm-stripped ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+    && strip ./fnm \
+    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS checksec
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
