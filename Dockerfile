@@ -202,15 +202,15 @@ RUN source '/root/.bashrc' \
     && strip ./checksec \
     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-# FROM quay.io/icecodenew/rust-collection:build_base_alpine AS just
-# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# # https://api.github.com/repos/casey/just/commits?per_page=1
-# ARG just_latest_commit_hash='d43241a781aa3abd9b76dc7baf030593bb61b689'
-# WORKDIR /usr/local/cargo/bin
-# RUN source '/root/.bashrc' \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/casey/just.git' just --verbose \
-#     && strip ./just \
-#     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+FROM quay.io/icecodenew/rust-collection:build_base_alpine AS just
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/casey/just/commits?per_page=1
+ARG just_latest_commit_hash='d43241a781aa3abd9b76dc7baf030593bb61b689'
+WORKDIR /usr/local/cargo/bin
+RUN source '/root/.bashrc' \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/casey/just.git' just --verbose \
+    && strip ./just \
+    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 # FROM quay.io/icecodenew/rust-collection:build_base_alpine AS desed
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -242,7 +242,7 @@ COPY --from=hexyl /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hyperfine /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fnm /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=checksec /usr/local/cargo/bin /usr/local/cargo/bin/
-# COPY --from=just /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=just /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=desed /usr/local/cargo/bin /usr/local/cargo/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash coreutils curl tzdata; \
