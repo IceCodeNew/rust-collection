@@ -21,14 +21,14 @@ RUN LDFLAGS="-s" \
     && x86_64-w64-mingw32-strip ./sslocal.exe ./ssurl.exe \
     && bsdtar --no-xattrs -a -cf ss-rust-win-gnu-x64.zip ./sslocal.exe ./ssurl.exe \
     && rm -f ./sslocal.exe ./ssurl.exe
-RUN unset LDFLAGS CXXFLAGS CFLAGS \
-    && source '/root/.bashrc' \
-    && export LDFLAGS="-fuse-ld=lld -s" \
-    && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo +nightly install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
-    && armv6-linux-musleabi-strip ./sslocal ./ssurl \
-    && bsdtar --no-xattrs -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz ./sslocal ./ssurl \
-    && rm -f ./sslocal ./ssurl
+# RUN unset LDFLAGS CXXFLAGS CFLAGS \
+#     && source '/root/.bashrc' \
+#     && export LDFLAGS="-fuse-ld=lld -s" \
+#     && env \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo +nightly install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+#     && armv6-linux-musleabi-strip ./sslocal ./ssurl \
+#     && bsdtar --no-xattrs -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz ./sslocal ./ssurl \
+#     && rm -f ./sslocal ./ssurl
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && env \
@@ -47,11 +47,11 @@ RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/cloudflare/boringtun.git' --verbose \
     && strip -o ./boringtun-linux-gnu-x64 ./boringtun \
     && rm -f ./boringtun \
-RUN export LDFLAGS="-s -fuse-ld=lld" \
-    && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --git 'https://github.com/cloudflare/boringtun.git' --verbose \
-    && armv6-linux-musleabi-strip -o ./boringtun-linux-arm-musleabi5-x32 ./boringtun \
-    && rm -f ./boringtun \
+# RUN export LDFLAGS="-s -fuse-ld=lld" \
+#     && env \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static -C target-feature=-vfp2 -C target-feature=-vfp3" cargo install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --git 'https://github.com/cloudflare/boringtun.git' --verbose \
+#     && armv6-linux-musleabi-strip -o ./boringtun-linux-arm-musleabi5-x32 ./boringtun \
+#     && rm -f ./boringtun \
     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS cfnts

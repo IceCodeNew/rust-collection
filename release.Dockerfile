@@ -24,12 +24,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --tag "$tag_name" \
     --name "ss-rust-linux-gnu-x64.tar.xz" \
     --file "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz"; \
-    github-release upload \
-    --user IceCodeNew \
-    --repo rust-collection \
-    --tag "$tag_name" \
-    --name "ss-rust-linux-arm-musleabi5-x32.tar.gz" \
-    --file "/usr/local/cargo/bin/ss-rust-linux-arm-musleabi5-x32.tar.gz"; \
+    # github-release upload \
+    # --user IceCodeNew \
+    # --repo rust-collection \
+    # --tag "$tag_name" \
+    # --name "ss-rust-linux-arm-musleabi5-x32.tar.gz" \
+    # --file "/usr/local/cargo/bin/ss-rust-linux-arm-musleabi5-x32.tar.gz"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
@@ -42,12 +42,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --tag "$tag_name" \
     --name "boringtun-linux-gnu-x64" \
     --file "/usr/local/cargo/bin/boringtun-linux-gnu-x64"; \
-    github-release upload \
-    --user IceCodeNew \
-    --repo rust-collection \
-    --tag "$tag_name" \
-    --name "boringtun-linux-arm-musleabi5-x32" \
-    --file "/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32"; \
+    # github-release upload \
+    # --user IceCodeNew \
+    # --repo rust-collection \
+    # --tag "$tag_name" \
+    # --name "boringtun-linux-arm-musleabi5-x32" \
+    # --file "/usr/local/cargo/bin/boringtun-linux-arm-musleabi5-x32"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
