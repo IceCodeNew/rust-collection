@@ -89,6 +89,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo rust-collection \
     --tag "$tag_name" \
+    --name "coreutils" \
+    --file "/usr/local/cargo/bin/coreutils"; \
+    github-release upload \
+    --user IceCodeNew \
+    --repo rust-collection \
+    --tag "$tag_name" \
     --name "sd" \
     --file "/usr/local/cargo/bin/sd"; \
     github-release upload \

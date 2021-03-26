@@ -51,6 +51,9 @@ jobs:
           echo "ripgrep_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/BurntSushi/ripgrep/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "coreutils_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/uutils/coreutils/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "sd_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/chmln/sd/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -103,6 +106,7 @@ jobs:
           sed -i -E "s/^ARG rsign2_latest_commit_hash=.+/ARG rsign2_latest_commit_hash=${rsign2_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG b3sum_latest_tag_name=.+/ARG b3sum_latest_tag_name=${b3sum_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG ripgrep_latest_commit_hash=.+/ARG ripgrep_latest_commit_hash=${ripgrep_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG coreutils_latest_commit_hash=.+/ARG coreutils_latest_commit_hash=${coreutils_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG sd_latest_commit_hash=.+/ARG sd_latest_commit_hash=${sd_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG fd_latest_tag_name=.+/ARG fd_latest_tag_name=${fd_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG bat_latest_tag_name=.+/ARG bat_latest_tag_name=${bat_latest_tag_name:?empty value}/" Dockerfile

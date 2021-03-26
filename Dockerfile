@@ -143,6 +143,22 @@ RUN source '/root/.bashrc' \
     && "/usr/local/cargo/bin/rg" --pcre2-version \
     && rm -rf '/git/ripgrep' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS coreutils
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/uutils/coreutils/commits?per_page=1
+ARG coreutils_latest_commit_hash='f431f58dd890ea9dad386233c18b9555182fcb46'
+WORKDIR /git/coreutils
+RUN source '/root/.bashrc' \
+    && git_clone 'https://github.com/uutils/coreutils.git' '/git/coreutils' \
+    && cargo update --verbose || exit 1; \
+    if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+    then git reset --hard "$coreutils_latest_commit_hash" \
+    && echo "$ git reset --hard $shadowsocks_rust_latest_commit_hash" \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+    fi; \
+    strip -o "/usr/local/cargo/bin/coreutils" ./target/x86_64-unknown-linux-gnu/release/coreutils \
+    && rm -rf '/git/coreutils' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
+
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS sd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/chmln/sd/commits?per_page=1
@@ -255,6 +271,7 @@ COPY --from=websocat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=rsign2 /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=b3sum /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=ripgrep /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=coreutils /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=sd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=bat /usr/local/cargo/bin /usr/local/cargo/bin/
