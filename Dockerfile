@@ -143,6 +143,24 @@ RUN source '/root/.bashrc' \
     && "/usr/local/cargo/bin/rg" --pcre2-version \
     && rm -rf '/git/ripgrep' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
+FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS sd
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/chmln/sd/commits?per_page=1
+ARG sd_latest_commit_hash='ab6827df4e5006d017d1a08524e3183a3708bd6e'
+WORKDIR /usr/local/cargo/bin
+RUN source '/root/.bashrc' \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/chmln/sd.git' --verbose \
+    && mv ./sd ./sd-stripped
+RUN LDFLAGS="-s" \
+    && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
+    && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
+    && export LDFLAGS CXXFLAGS CFLAGS \
+    && env \
+    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static" cargo install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --git 'https://github.com/chmln/sd.git' --verbose \
+    && x86_64-w64-mingw32-strip ./sd.exe \
+    && strip -p -o ./sd ./sd-stripped \
+    && rm -rf ./sd-stripped ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sharkdp/fd/releases/latest
@@ -237,6 +255,7 @@ COPY --from=websocat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=rsign2 /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=b3sum /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=ripgrep /usr/local/cargo/bin /usr/local/cargo/bin/
+COPY --from=sd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=bat /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hexyl /usr/local/cargo/bin /usr/local/cargo/bin/
