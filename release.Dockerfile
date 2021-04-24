@@ -85,12 +85,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     # --tag "$tag_name" \
     # --name "$pcre2_deb_filename" \
     # --file "/build_root/$pcre2_deb_filename"; \
-    github-release upload \
-    --user IceCodeNew \
-    --repo rust-collection \
-    --tag "$tag_name" \
-    --name "coreutils" \
-    --file "/usr/local/cargo/bin/coreutils"; \
+    # github-release upload \
+    # --user IceCodeNew \
+    # --repo rust-collection \
+    # --tag "$tag_name" \
+    # --name "coreutils" \
+    # --file "/usr/local/cargo/bin/coreutils"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
@@ -139,12 +139,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --tag "$tag_name" \
     --name "checksec" \
     --file "/usr/local/cargo/bin/checksec"; \
-    github-release upload \
-    --user IceCodeNew \
-    --repo rust-collection \
-    --tag "$tag_name" \
-    --name "cfnts" \
-    --file "/usr/local/cargo/bin/cfnts"; \
+    # github-release upload \
+    # --user IceCodeNew \
+    # --repo rust-collection \
+    # --tag "$tag_name" \
+    # --name "cfnts" \
+    # --file "/usr/local/cargo/bin/cfnts"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
