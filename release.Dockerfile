@@ -150,13 +150,13 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --repo rust-collection \
     --tag "$tag_name" \
     --name "dog" \
-    --file "/usr/local/cargo/bin/dog"; \
-    github-release upload \
-    --user IceCodeNew \
-    --repo rust-collection \
-    --tag "$tag_name" \
-    --name "websocat" \
-    --file "/usr/local/cargo/bin/websocat"
+    --file "/usr/local/cargo/bin/dog"
+    # github-release upload \
+    # --user IceCodeNew \
+    # --repo rust-collection \
+    # --tag "$tag_name" \
+    # --name "websocat" \
+    # --file "/usr/local/cargo/bin/websocat"
     # github-release upload \
     # --user IceCodeNew \
     # --repo rust-collection \
