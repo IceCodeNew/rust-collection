@@ -109,18 +109,18 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --tag "$tag_name" \
     --name "fd" \
     --file "/usr/local/cargo/bin/fd"; \
-    github-release upload \
-    --user IceCodeNew \
-    --repo rust-collection \
-    --tag "$tag_name" \
-    --name "bat" \
-    --file "/usr/local/cargo/bin/bat"; \
-    github-release upload \
-    --user IceCodeNew \
-    --repo rust-collection \
-    --tag "$tag_name" \
-    --name "hexyl" \
-    --file "/usr/local/cargo/bin/hexyl"; \
+    # github-release upload \
+    # --user IceCodeNew \
+    # --repo rust-collection \
+    # --tag "$tag_name" \
+    # --name "bat" \
+    # --file "/usr/local/cargo/bin/bat"; \
+    # github-release upload \
+    # --user IceCodeNew \
+    # --repo rust-collection \
+    # --tag "$tag_name" \
+    # --name "hexyl" \
+    # --file "/usr/local/cargo/bin/hexyl"; \
     github-release upload \
     --user IceCodeNew \
     --repo rust-collection \
