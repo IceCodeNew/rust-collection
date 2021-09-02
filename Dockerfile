@@ -25,14 +25,14 @@ RUN LDFLAGS="-s" \
 #     && source '/root/.bashrc' \
 #     && export LDFLAGS="-fuse-ld=lld -s" \
 #     && env \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo +nightly install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo +nightly install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
 #     && armv6-linux-musleabi-strip ./sslocal ./ssurl \
 #     && bsdtar --no-xattrs -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz ./sslocal ./ssurl \
 #     && rm -f ./sslocal ./ssurl
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+aes,+pclmul,+sse,+sse2,+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+avx2,+fma,+adx -C link-arg=-fuse-ld=lld" cargo +nightly install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+aes,+pclmul,+sse,+sse2,+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+avx2,+fma,+adx -C link-arg=-fuse-ld=lld" cargo +nightly install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && strip ./sslocal ./ssmanager ./ssserver ./ssurl \
     && bsdtar --no-xattrs -a -cf ss-rust-linux-gnu-x64.tar.xz ./sslocal ./ssmanager ./ssserver ./ssurl \
     && rm -f ./sslocal ./ssmanager ./ssserver ./ssurl \
