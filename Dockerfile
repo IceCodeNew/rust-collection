@@ -8,7 +8,7 @@ RUN LDFLAGS="-fuse-ld=lld -s" \
     && CFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=+crt-static,+aes,+pclmul,+sse,+sse2,+sse3,+ssse3,+sse4.1,+sse4.2,-avx,-avx2,-fma,-adx -C link-arg=-fuse-ld=lld" cargo +nightly install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded aead-cipher-extra mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" cargo +nightly install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded aead-cipher-extra mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && strip ./ssmanager ./ssserver \
     && bsdtar --no-xattrs -a -cf 4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz ./ssmanager ./ssserver \
     && rm -f ./ssmanager ./ssserver
@@ -17,7 +17,7 @@ RUN LDFLAGS="-s" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+aes,+pclmul,+sse,+sse2,+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+avx2,+fma,+adx" cargo +nightly install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx,+avx2,+sha" cargo +nightly install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && x86_64-w64-mingw32-strip ./sslocal.exe ./ssurl.exe \
     && bsdtar --no-xattrs -a -cf ss-rust-win-gnu-x64.zip ./sslocal.exe ./ssurl.exe \
     && rm -f ./sslocal.exe ./ssurl.exe
@@ -32,7 +32,7 @@ RUN LDFLAGS="-s" \
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+aes,+pclmul,+sse,+sse2,+sse3,+ssse3,+sse4.1,+sse4.2,+avx,+avx2,+fma,+adx -C link-arg=-fuse-ld=lld" cargo +nightly install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+avx,+avx2,+sha -C link-arg=-fuse-ld=lld" cargo +nightly install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
     && strip ./sslocal ./ssmanager ./ssserver ./ssurl \
     && bsdtar --no-xattrs -a -cf ss-rust-linux-gnu-x64.tar.xz ./sslocal ./ssmanager ./ssserver ./ssurl \
     && rm -f ./sslocal ./ssmanager ./ssserver ./ssurl \
