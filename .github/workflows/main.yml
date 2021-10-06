@@ -10,7 +10,6 @@ on:
     paths-ignore:
       - "**/LICENSE"
       - "**/README.md"
-      - "**/got_github_release.sh"
   # pull_request:
   #   branches:
   #     - master
@@ -120,7 +119,7 @@ jobs:
           sed -i -E "s/^ARG desed_latest_tag_name=.+/ARG desed_latest_tag_name=${desed_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
           git add Dockerfile
-          git rm got_github_release.sh release.Dockerfile build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile
+          git rm build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
           git push -f origin HEAD:release
@@ -133,7 +132,7 @@ jobs:
           sed -i -E "s/^    RUST_VERSION=.+/    RUST_VERSION=${RUST_VERSION:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile
           sed -i -E "s/^ENV rust_nightly_date=.+/ENV rust_nightly_date=${rust_nightly_date:?empty value} \\\\/" build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile
           git add build_base_alpine.Dockerfile build_base_ubuntu.Dockerfile
-          git rm got_github_release.sh Dockerfile release.Dockerfile
+          git rm Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
           git push -f origin HEAD:build_base
