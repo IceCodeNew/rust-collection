@@ -217,15 +217,15 @@ RUN source '/root/.bashrc' \
     && strip ./hyperfine \
     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fnm
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/Schniz/fnm/releases/latest
-ARG fnm_latest_tag_name='v1.22.6'
-WORKDIR /usr/local/cargo/bin
-RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" --verbose \
-    && strip ./fnm \
-    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+# FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fnm
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# # https://api.github.com/repos/Schniz/fnm/releases/latest
+# ARG fnm_latest_tag_name='v1.22.6'
+# WORKDIR /usr/local/cargo/bin
+# RUN source '/root/.bashrc' \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --git 'https://github.com/Schniz/fnm.git' --tag "$fnm_latest_tag_name" --verbose \
+#     && strip ./fnm \
+#     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS checksec
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -277,7 +277,7 @@ COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=bat /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=hexyl /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=hyperfine /usr/local/cargo/bin /usr/local/cargo/bin/
-COPY --from=fnm /usr/local/cargo/bin /usr/local/cargo/bin/
+# COPY --from=fnm /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=checksec /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=just /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=desed /usr/local/cargo/bin /usr/local/cargo/bin/
