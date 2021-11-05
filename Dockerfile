@@ -2,41 +2,45 @@ FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS shadowsocks-rust
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
-WORKDIR /usr/local/cargo/bin
-RUN LDFLAGS="-fuse-ld=lld -s" \
+WORKDIR /git/shadowsocks-rust
+RUN source '/root/.bashrc' \
+    && LDFLAGS="-fuse-ld=lld -s" \
     && CXXFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
     && CFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" cargo +nightly install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded aead-cipher-extra mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
-    && strip ./ssmanager ./ssserver \
-    && bsdtar --no-xattrs -a -cf 4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz ./ssmanager ./ssserver \
-    && rm -f ./ssmanager ./ssserver
+    && git_clone 'https://github.com/shadowsocks/shadowsocks-rust.git' '/git/shadowsocks-rust' \
+    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" cargo +nightly build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded aead-cipher-extra mimalloc" --release --verbose \
+    && strip -o "./ssmanager" ./target/x86_64-unknown-linux-gnu/release/ssmanager \
+    && strip -o "./ssserver" ./target/x86_64-unknown-linux-gnu/release/ssserver \
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz" "./ssmanager" "./ssserver"
 RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx,+avx2,+sha" cargo +nightly install --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
-    && x86_64-w64-mingw32-strip ./sslocal.exe ./ssurl.exe \
-    && bsdtar --no-xattrs -a -cf ss-rust-win-gnu-x64.zip ./sslocal.exe ./ssurl.exe \
-    && rm -f ./sslocal.exe ./ssurl.exe
+    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx,+avx2,+sha" cargo +nightly build --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra" --release --verbose \
+    && x86_64-w64-mingw32-strip -o "./sslocal.exe" ./target/x86_64-pc-windows-gnu/release/sslocal.exe \
+    && x86_64-w64-mingw32-strip -o "./ssurl.exe" ./target/x86_64-pc-windows-gnu/release/ssurl.exe \
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-win-gnu-x64.zip" "./sslocal.exe" "./ssurl.exe"
 # RUN unset LDFLAGS CXXFLAGS CFLAGS \
 #     && source '/root/.bashrc' \
 #     && export LDFLAGS="-fuse-ld=lld -s" \
 #     && env \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo +nightly install --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
-#     && armv6-linux-musleabi-strip ./sslocal ./ssurl \
-#     && bsdtar --no-xattrs -a -cf ss-rust-linux-arm-musleabi5-x32.tar.gz ./sslocal ./ssurl \
-#     && rm -f ./sslocal ./ssurl
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=+crt-static,-vfp2,-vfp3" cargo +nightly build --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun" --release --verbose \
+#     && armv6-linux-musleabi-strip -o "./sslocal" ./target/armv7-unknown-linux-musleabi/release/sslocal \
+#     && armv6-linux-musleabi-strip -o "./ssurl" ./target/armv7-unknown-linux-musleabi/release/ssurl \
+#     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-arm-musleabi5-x32.tar.gz" "./sslocal" "./ssurl"
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+avx,+avx2,+sha -C link-arg=-fuse-ld=lld" cargo +nightly install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun mimalloc" --git 'https://github.com/shadowsocks/shadowsocks-rust.git' --verbose \
-    && strip ./sslocal ./ssmanager ./ssserver ./ssurl \
-    && bsdtar --no-xattrs -a -cf ss-rust-linux-gnu-x64.tar.xz ./sslocal ./ssmanager ./ssserver ./ssurl \
-    && rm -f ./sslocal ./ssmanager ./ssserver ./ssurl \
-    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+avx,+avx2,+sha -C link-arg=-fuse-ld=lld" cargo +nightly build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun mimalloc" --release --verbose \
+    && strip -o "./sslocal" ./target/x86_64-unknown-linux-gnu/release/sslocal \
+    && strip -o "./ssmanager" ./target/x86_64-unknown-linux-gnu/release/ssmanager \
+    && strip -o "./ssserver" ./target/x86_64-unknown-linux-gnu/release/ssserver \
+    && strip -o "./ssurl" ./target/x86_64-unknown-linux-gnu/release/ssurl \
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz" "./sslocal" "./ssmanager" "./ssserver" "./ssurl" \
+    && rm -rf '/git/shadowsocks-rust' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS boringtun
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
