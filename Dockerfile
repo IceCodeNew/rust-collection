@@ -140,7 +140,7 @@ RUN source '/root/.bashrc' \
     && cargo update --verbose || exit 1; \
     if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
     then git reset --hard "$ripgrep_latest_commit_hash" \
-    && echo "$ git reset --hard $shadowsocks_rust_latest_commit_hash" \
+    && echo "$ git reset --hard $ripgrep_latest_commit_hash" \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
     fi; \
     strip -o "/usr/local/cargo/bin/rg" ./target/x86_64-unknown-linux-gnu/release/rg \
