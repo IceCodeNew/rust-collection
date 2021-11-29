@@ -34,13 +34,10 @@ RUN LDFLAGS="-s" \
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+avx,+avx2,+sha -C link-arg=-fuse-ld=lld" cargo +nightly build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local server manager utility service local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun mimalloc" --release --verbose \
-    && strip -o "./sslocal" ./target/x86_64-unknown-linux-gnu/release/sslocal \
-    && strip -o "./ssmanager" ./target/x86_64-unknown-linux-gnu/release/ssmanager \
-    && strip -o "./ssserver" ./target/x86_64-unknown-linux-gnu/release/ssserver \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+avx,+avx2,+sha -C link-arg=-fuse-ld=lld" cargo +nightly build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https utility service local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun mimalloc" --release --verbose \
     && strip -o "./ssurl" ./target/x86_64-unknown-linux-gnu/release/ssurl \
     && strip -o "./ssservice" ./target/x86_64-unknown-linux-gnu/release/ssservice \
-    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz" "./sslocal" "./ssmanager" "./ssserver" "./ssurl" "./ssservice" \
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz" "./ssurl" "./ssservice" \
     && rm -rf '/git/shadowsocks-rust' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS boringtun
