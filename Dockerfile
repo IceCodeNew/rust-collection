@@ -179,15 +179,15 @@ RUN LDFLAGS="-s" \
     && strip -p -o ./sd ./sd-stripped \
     && rm -rf ./sd-stripped ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/sharkdp/fd/releases/latest
-ARG fd_latest_tag_name='v8.1.1'
-WORKDIR /usr/local/cargo/bin
-RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl fd-find --verbose \
-    && strip ./fd \
-    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+# FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fd
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# # https://api.github.com/repos/sharkdp/fd/releases/latest
+# ARG fd_latest_tag_name='v8.1.1'
+# WORKDIR /usr/local/cargo/bin
+# RUN source '/root/.bashrc' \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl fd-find --verbose \
+#     && strip ./fd \
+#     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 # FROM quay.io/icecodenew/rust-collection:build_base_alpine AS bat
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -209,15 +209,15 @@ RUN source '/root/.bashrc' \
 #     && strip ./hexyl \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-FROM quay.io/icecodenew/rust-collection:build_base_alpine AS hyperfine
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/sharkdp/hyperfine/releases/latest
-ARG hyperfine_latest_tag_name='v1.11.0'
-WORKDIR /usr/local/cargo/bin
-RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hyperfine --verbose \
-    && strip ./hyperfine \
-    && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
+# FROM quay.io/icecodenew/rust-collection:build_base_alpine AS hyperfine
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# # https://api.github.com/repos/sharkdp/hyperfine/releases/latest
+# ARG hyperfine_latest_tag_name='v1.11.0'
+# WORKDIR /usr/local/cargo/bin
+# RUN source '/root/.bashrc' \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hyperfine --verbose \
+#     && strip ./hyperfine \
+#     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
 # FROM quay.io/icecodenew/rust-collection:build_base_alpine AS fnm
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -275,10 +275,10 @@ COPY --from=b3sum /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=ripgrep /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=coreutils /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=sd /usr/local/cargo/bin /usr/local/cargo/bin/
-COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
+# COPY --from=fd /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=bat /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=hexyl /usr/local/cargo/bin /usr/local/cargo/bin/
-COPY --from=hyperfine /usr/local/cargo/bin /usr/local/cargo/bin/
+# COPY --from=hyperfine /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=fnm /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=checksec /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=just /usr/local/cargo/bin /usr/local/cargo/bin/
