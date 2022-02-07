@@ -19,7 +19,7 @@ RUN LDFLAGS="-s" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static,+avx,+avx2,+sha" cargo +nightly build --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra" --release --verbose \
+    && RUSTFLAGS="-C prefer-dynamic=off -C target-feature=+crt-static" cargo +nightly build --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra" --release --verbose \
     && x86_64-w64-mingw32-strip -o "./sslocal.exe" ./target/x86_64-pc-windows-gnu/release/sslocal.exe \
     && x86_64-w64-mingw32-strip -o "./ssurl.exe" ./target/x86_64-pc-windows-gnu/release/ssurl.exe \
     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-win-gnu-x64.zip" "./sslocal.exe" "./ssurl.exe"
@@ -34,7 +34,7 @@ RUN LDFLAGS="-s" \
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+avx,+avx2,+sha -C link-arg=-fuse-ld=lld" cargo +nightly build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https utility service local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun mimalloc" --release --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo +nightly build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns dns-over-tls dns-over-https utility service local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-extra local-redir local-tun mimalloc" --release --verbose \
     && strip -o "./ssurl" ./target/x86_64-unknown-linux-gnu/release/ssurl \
     && strip -o "./ssservice" ./target/x86_64-unknown-linux-gnu/release/ssservice \
     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz" "./ssurl" "./ssservice" \
