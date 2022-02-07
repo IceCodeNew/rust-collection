@@ -45,6 +45,6 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && rm -rf "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
     # ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.x86_64-unknown-linux-musl
     # && curl -sS "https://musl.cc/x86_64-linux-musl-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1 \
-RUN rustup toolchain install nightly-x86_64-unknown-linux-gnu --allow-downgrade --profile minimal --component llvm-tools-preview \
-    # && rustup component add --toolchain nightly --target x86_64-unknown-linux-gnu reproducible-artifacts \
-    && rustup +nightly target add x86_64-unknown-linux-gnu x86_64-pc-windows-gnu
+# RUN rustup toolchain install nightly-x86_64-unknown-linux-gnu --allow-downgrade --profile minimal --component llvm-tools-preview \
+#     # && rustup component add --toolchain nightly --target x86_64-unknown-linux-gnu reproducible-artifacts \
+#     && rustup +nightly target add x86_64-unknown-linux-gnu x86_64-pc-windows-gnu
