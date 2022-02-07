@@ -38,10 +38,10 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && ./rustup-init -y -c llvm-tools-preview -t x86_64-unknown-linux-gnu x86_64-pc-windows-gnu --default-host x86_64-unknown-linux-gnu --default-toolchain stable --profile minimal --no-modify-path \
     && rm ./rustup-init \
     && chmod -R a+w $RUSTUP_HOME $CARGO_HOME \
-    && mold -run cargo install cargo-deb \
-    # && mold -run cargo install cargo-audit --features=fix \
-    # && mold -run cargo install xargo \
-    # && mold -run cargo install cross \
+    && mold -run cargo install -j "$(nproc)" cargo-deb \
+    # && mold -run cargo install -j "$(nproc)" cargo-audit --features=fix \
+    # && mold -run cargo install -j "$(nproc)" xargo \
+    # && mold -run cargo install -j "$(nproc)" cross \
     && rm -rf "CARGO_HOME/git" "CARGO_HOME/registry" || exit 0
     # ### https://github.com/rust-embedded/cross/blob/master/docker/Dockerfile.x86_64-unknown-linux-musl
     # && curl -sS "https://musl.cc/x86_64-linux-musl-cross.tgz" | bsdtar -xf- -C /usr/local --strip-components 1 \
