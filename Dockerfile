@@ -259,12 +259,7 @@ RUN source '/root/.bashrc' \
 #     && strip ./desed \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-FROM quay.io/icecodenew/alpine:latest AS collection
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
-# date +%s
-# ARG cachebust='1603527789'
-ARG TZ='Asia/Taipei'
-ENV DEFAULT_TZ ${TZ}
+FROM scratch AS assets
 COPY --from=shadowsocks-rust /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=boringtun /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=cfnts /usr/local/cargo/bin /usr/local/cargo/bin/
@@ -283,6 +278,14 @@ COPY --from=sd /usr/local/cargo/bin /usr/local/cargo/bin/
 COPY --from=checksec /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=just /usr/local/cargo/bin /usr/local/cargo/bin/
 # COPY --from=desed /usr/local/cargo/bin /usr/local/cargo/bin/
+
+FROM quay.io/icecodenew/alpine:latest AS collection
+COPY --from=assets /usr/local/cargo/bin/* /usr/local/cargo/bin/
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+# date +%s
+# ARG cachebust='1603527789'
+ARG TZ='Asia/Taipei'
+ENV DEFAULT_TZ ${TZ}
 RUN apk update; apk --no-progress --no-cache add \
     bash coreutils curl tzdata; \
     apk --no-progress --no-cache upgrade; \
