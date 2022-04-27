@@ -1,4 +1,4 @@
-FROM quay.io/icecodenew/builder_image_x86_64-linux:ubuntu AS rust-base
+FROM quay.io/icecodenew/builder_image_x86_64-linux:debian AS rust-base
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG DEBIAN_FRONTEND=noninteractive
 # https://api.github.com/repos/rust-lang/rust/releases/latest
@@ -22,8 +22,8 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix file gettext git gpg gpg-agent libarchive-tools libedit-dev libltdl-dev liblzma-dev libncurses-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools netbase ninja-build pkgconf util-linux \
     && apt-get -y full-upgrade \
     # && dpkg --add-architecture i386 \
-    # && curl -sSL https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
-    # && echo 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main' > /etc/apt/sources.list.d/wine.develop.list \
+    # && curl -fsSLR 'https://dl.winehq.org/wine-builds/winehq.key' -o '/usr/share/keyrings/winehq-archive.key' \
+    # && curl -fsSLR 'https://dl.winehq.org/wine-builds/debian/dists/bullseye/winehq-bullseye.sources' -o '/etc/apt/sources.list.d/winehq-bullseye.sources' \
     # && apt-get update && apt-get -y --install-recommends install \
     # winehq-devel \
     && apt-get clean \

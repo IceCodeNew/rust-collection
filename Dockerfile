@@ -1,4 +1,4 @@
-FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS shadowsocks-rust
+FROM quay.io/icecodenew/rust-collection:build_base_debian AS shadowsocks-rust
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
 ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
@@ -40,7 +40,7 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz" "./ssurl" "./ssservice" \
     && rm -rf '/git/shadowsocks-rust' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-# FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS boringtun
+# FROM quay.io/icecodenew/rust-collection:build_base_debian AS boringtun
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1
 # ARG boringtun_latest_commit_hash='a6d9d059a72466c212fa3055170c67ca16cb935b'
@@ -56,7 +56,7 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
 #     && rm -f ./boringtun-cli \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-# FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS cfnts
+# FROM quay.io/icecodenew/rust-collection:build_base_debian AS cfnts
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/cloudflare/cfnts/commits?per_page=1
 # ARG cfnts_latest_commit_hash='3d9c673e1b7abbad1bd691ef7c1608582e8371a6'
@@ -72,7 +72,7 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
 #     strip -o "/usr/local/cargo/bin/cfnts" ./target/x86_64-unknown-linux-gnu/release/cfnts \
 #     && rm -rf '/git/cfnts' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS dog
+FROM quay.io/icecodenew/rust-collection:build_base_debian AS dog
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/ogham/dog/commits?per_page=1
 ARG dog_latest_commit_hash='d2d22fd8a4ba79027b5e2013d4ded3743dad5262'
@@ -82,7 +82,7 @@ RUN source '/root/.bashrc' \
     && strip ./dog \
     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-# FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS websocat
+# FROM quay.io/icecodenew/rust-collection:build_base_debian AS websocat
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/vi/websocat/commits?per_page=1
 # ARG websocat_latest_commit_hash='4a421b7181aa5ab0101be68041f7c9cc9bdb2569'
@@ -92,7 +92,7 @@ RUN source '/root/.bashrc' \
 #     && strip ./websocat \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS rsign2
+FROM quay.io/icecodenew/rust-collection:build_base_debian AS rsign2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jedisct1/rsign2/commits?per_page=1
 ARG rsign2_latest_commit_hash='79e058b7c18bcd519f160b5391c240549a0f5fdc'
@@ -110,7 +110,7 @@ RUN LDFLAGS="-s" \
     && strip -p -o ./rsign ./rsign-stripped \
     && rm -rf ./rsign-stripped ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS b3sum
+FROM quay.io/icecodenew/rust-collection:build_base_debian AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest
 ARG b3sum_latest_tag_name='0.3.7'
@@ -128,7 +128,7 @@ RUN LDFLAGS="-s" \
     && strip -p -o ./b3sum ./b3sum-stripped \
     && rm -rf ./b3sum-stripped ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-gdb ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS ripgrep
+FROM quay.io/icecodenew/rust-collection:build_base_debian AS ripgrep
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BurntSushi/ripgrep/commits?per_page=1
 ARG ripgrep_latest_commit_hash='c5ea5a13df8de5b7823e5ecad00bad1c4c4c854d'
@@ -145,7 +145,7 @@ RUN source '/root/.bashrc' \
     && "/usr/local/cargo/bin/rg" --pcre2-version \
     && rm -rf '/git/ripgrep' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-# FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS coreutils
+# FROM quay.io/icecodenew/rust-collection:build_base_debian AS coreutils
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/uutils/coreutils/commits?per_page=1
 # ARG coreutils_latest_commit_hash='f431f58dd890ea9dad386233c18b9555182fcb46'
@@ -161,7 +161,7 @@ RUN source '/root/.bashrc' \
 #     strip -o "/usr/local/cargo/bin/coreutils" ./target/x86_64-unknown-linux-gnu/release/coreutils \
 #     && rm -rf '/git/coreutils' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
-FROM quay.io/icecodenew/rust-collection:build_base_ubuntu AS sd
+FROM quay.io/icecodenew/rust-collection:build_base_debian AS sd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/chmln/sd/commits?per_page=1
 ARG sd_latest_commit_hash='ab6827df4e5006d017d1a08524e3183a3708bd6e'
