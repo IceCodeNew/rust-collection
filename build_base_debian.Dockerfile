@@ -19,7 +19,7 @@ ENV rust_nightly_date='2020-11-26' \
 # ENV CROSS_DOCKER_IN_DOCKER=true
 # ENV CROSS_CONTAINER_ENGINE=podman
 RUN apt-get update && apt-get -y --no-install-recommends install \
-    apt-utils autoconf automake binutils build-essential ca-certificates checkinstall checksec cmake coreutils curl dos2unix file gettext git gpg gpg-agent libarchive-tools libedit-dev libltdl-dev liblzma-dev libncurses-dev libtool-bin libz-mingw-w64-dev locales mingw-w64 mingw-w64-tools netbase ninja-build pkgconf util-linux \
+    gettext liblzma-dev libz-mingw-w64-dev mingw-w64 mingw-w64-tools \
     && apt-get -y full-upgrade \
     # && dpkg --add-architecture i386 \
     # && curl -fsSLR 'https://dl.winehq.org/wine-builds/winehq.key' -o '/usr/share/keyrings/winehq-archive.key' \
@@ -29,7 +29,6 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     # && update-ca-certificates \
-    # && for i in {1..2}; do checksec --update; done \
     && update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix \
     && update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix \
     && source '/root/.bashrc' \
