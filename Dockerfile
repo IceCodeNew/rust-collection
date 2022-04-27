@@ -9,7 +9,7 @@ RUN source '/root/.bashrc' \
     && CFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && git_clone 'https://github.com/shadowsocks/shadowsocks-rust.git' '/git/shadowsocks-rust' \
+    && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/shadowsocks/shadowsocks-rust.git' '/git/shadowsocks-rust' \
     && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" mold -run cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded aead-cipher-extra aead-cipher-2022 mimalloc" --release --verbose \
     && strip -o "./ssmanager" ./target/x86_64-unknown-linux-gnu/release/ssmanager \
     && strip -o "./ssserver" ./target/x86_64-unknown-linux-gnu/release/ssserver \
@@ -62,7 +62,7 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
 # ARG cfnts_latest_commit_hash='3d9c673e1b7abbad1bd691ef7c1608582e8371a6'
 # WORKDIR /git/cfnts
 # RUN source '/root/.bashrc' \
-#     && git_clone 'https://github.com/cloudflare/cfnts.git' '/git/cfnts' \
+#     && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/cloudflare/cfnts.git' '/git/cfnts' \
 #     && cargo update --verbose || exit 1; \
 #     if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static,+aes,+ssse3 -C link-arg=-fuse-ld=lld" mold -run cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
 #     then git reset --hard "$cfnts_latest_commit_hash" \
@@ -134,7 +134,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG ripgrep_latest_commit_hash='c5ea5a13df8de5b7823e5ecad00bad1c4c4c854d'
 WORKDIR /git/ripgrep
 RUN source '/root/.bashrc' \
-    && git_clone 'https://github.com/BurntSushi/ripgrep.git' '/git/ripgrep' \
+    && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/BurntSushi/ripgrep.git' '/git/ripgrep' \
     && cargo update --verbose || exit 1; \
     if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" mold -run cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
     then git reset --hard "$ripgrep_latest_commit_hash" \
@@ -151,7 +151,7 @@ RUN source '/root/.bashrc' \
 # ARG coreutils_latest_commit_hash='f431f58dd890ea9dad386233c18b9555182fcb46'
 # WORKDIR /git/coreutils
 # RUN source '/root/.bashrc' \
-#     && git_clone 'https://github.com/uutils/coreutils.git' '/git/coreutils' \
+#     && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/uutils/coreutils.git' '/git/coreutils' \
 #     && cargo update --verbose || exit 1; \
 #     if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" mold -run cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
 #     then git reset --hard "$coreutils_latest_commit_hash" \
