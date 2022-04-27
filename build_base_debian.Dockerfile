@@ -18,16 +18,15 @@ ENV rust_nightly_date='2020-11-26' \
 #     RUST_TEST_THREADS=1
 # ENV CROSS_DOCKER_IN_DOCKER=true
 # ENV CROSS_CONTAINER_ENGINE=podman
-RUN apt-get update && apt-get -y --no-install-recommends install \
+# RUN dpkg --add-architecture i386 \
+#     && curl -fsSLR 'https://dl.winehq.org/wine-builds/winehq.key' -o '/usr/share/keyrings/winehq-archive.key' \
+#     && curl -fsSLR 'https://dl.winehq.org/wine-builds/debian/dists/bullseye/winehq-bullseye.sources' -o '/etc/apt/sources.list.d/winehq-bullseye.sources' \
+#     && apt-get update && apt-get -y --install-recommends install \
+#     winehq-devel \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists/*
+RUN install_packages \
     gettext liblzma-dev libz-mingw-w64-dev mingw-w64 mingw-w64-tools \
-    && apt-get -y full-upgrade \
-    # && dpkg --add-architecture i386 \
-    # && curl -fsSLR 'https://dl.winehq.org/wine-builds/winehq.key' -o '/usr/share/keyrings/winehq-archive.key' \
-    # && curl -fsSLR 'https://dl.winehq.org/wine-builds/debian/dists/bullseye/winehq-bullseye.sources' -o '/etc/apt/sources.list.d/winehq-bullseye.sources' \
-    # && apt-get update && apt-get -y --install-recommends install \
-    # winehq-devel \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
     # && update-ca-certificates \
     && update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix \
     && update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix \
