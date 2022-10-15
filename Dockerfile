@@ -1,7 +1,7 @@
 FROM quay.io/icecodenew/rust-collection:build_base_debian AS shadowsocks-rust
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
-ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
+# https://api.github.com/repos/gfw-report/shadowsocks-rust/commits?per_page=1&sha=low-entropy
+ARG shadowsocks_rust_latest_commit_hash='d1cf917deebe1999044ca93965a602223de26be7'
 WORKDIR /git/shadowsocks-rust
 RUN source '/root/.bashrc' \
     && LDFLAGS="-fuse-ld=lld -s" \
@@ -9,7 +9,7 @@ RUN source '/root/.bashrc' \
     && CFLAGS="-O3 -pipe -g0 -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/shadowsocks/shadowsocks-rust.git' '/git/shadowsocks-rust' \
+    && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch --branch 'low-entropy' 'https://github.com/gfw-report/shadowsocks-rust.git' '/git/shadowsocks-rust' \
     && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded aead-cipher-2022 aead-cipher-2022-extra mimalloc" --release --verbose \
     && strip -o "./ssmanager" ./target/x86_64-unknown-linux-gnu/release/ssmanager \
     && strip -o "./ssserver" ./target/x86_64-unknown-linux-gnu/release/ssserver \
