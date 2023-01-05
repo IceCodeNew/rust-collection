@@ -33,7 +33,7 @@ jobs:
           echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "REPO_URL=github.com/${{ github.repository }}" >> $GITHUB_ENV
           echo "shadowsocks_rust_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/gfw-report/shadowsocks-rust/commits?per_page=1&sha=low-entropy' |
+                'https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "boringtun_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1' |
