@@ -10,10 +10,11 @@ RUN source '/root/.bashrc' \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
     && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/shadowsocks/shadowsocks-rust.git' '/git/shadowsocks-rust' \
-    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns server manager multi-threaded aead-cipher-2022 aead-cipher-2022-extra mimalloc" --release --verbose \
+    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging trust-dns utility server manager multi-threaded aead-cipher-2022 aead-cipher-2022-extra mimalloc" --release --verbose \
+    && strip -o "./ssurl" ./target/x86_64-unknown-linux-gnu/release/ssurl \
     && strip -o "./ssmanager" ./target/x86_64-unknown-linux-gnu/release/ssmanager \
     && strip -o "./ssserver" ./target/x86_64-unknown-linux-gnu/release/ssserver \
-    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz" "./ssmanager" "./ssserver"
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz" "./ssurl" "./ssmanager" "./ssserver"
 RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
