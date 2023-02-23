@@ -24,76 +24,90 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Set some variables
         run: |
+          set -x
+          GITHUB_API_BASEURL='https://api.github.com'
+          TMP_FILE=$(mktemp)
+          if curl -sS -i -I -H "Accept: application/vnd.github.v3+json" -o "$TMP_FILE" -- 'https://github-cache.yingmale.win/api/'; then
+            HTTP_STATUS_CODE=$(awk 'NR==1 {print $2}' "$TMP_FILE")
+            if [[ $HTTP_STATUS_CODE -ge 200 ]] && [[ $HTTP_STATUS_CODE -le 299 ]]; then
+              GITHUB_API_BASEURL='https://github-cache.yingmale.win/api'
+              echo "info: github cache is ready, will use ${GITHUB_API_BASEURL} as GITHUB_API_BASEURL."
+            fi
+          fi
+          "rm" -f "$TMP_FILE"
+
+          echo "GITHUB_API_BASEURL=${GITHUB_API_BASEURL}" >> $GITHUB_ENV
           echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "REPO_URL=github.com/${{ github.repository }}" >> $GITHUB_ENV
           echo "shadowsocks_rust_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/shadowsocks/shadowsocks-rust/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "boringtun_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/cloudflare/boringtun/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/cloudflare/boringtun/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "cfnts_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/cloudflare/cfnts/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/cloudflare/cfnts/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "rsign2_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/jedisct1/rsign2/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/jedisct1/rsign2/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "b3sum_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/BLAKE3-team/BLAKE3/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "ripgrep_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/BurntSushi/ripgrep/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/BurntSushi/ripgrep/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "coreutils_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/uutils/coreutils/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/uutils/coreutils/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "sd_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/chmln/sd/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/chmln/sd/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "fd_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/sharkdp/fd/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/sharkdp/fd/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "bat_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/sharkdp/bat/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/sharkdp/bat/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "hexyl_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/sharkdp/hexyl/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/sharkdp/hexyl/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "hyperfine_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/sharkdp/hyperfine/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/sharkdp/hyperfine/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "fnm_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/Schniz/fnm/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/Schniz/fnm/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "checksec_rs_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/etke/checksec.rs/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/etke/checksec.rs/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "dog_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/ogham/dog/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/ogham/dog/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "qft_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/TudbuT/qft/commits?per_page=1&sha=nogui' |
+                "${GITHUB_API_BASEURL}/repos/TudbuT/qft/commits?per_page=1&sha=nogui" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "websocat_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/vi/websocat/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/vi/websocat/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "just_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/casey/just/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/casey/just/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "desed_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/SoptikHa2/desed/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/SoptikHa2/desed/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "RUST_VERSION=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/rust-lang/rust/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/rust-lang/rust/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "cachebust=$(date +%s)" >> $GITHUB_ENV
           echo "rust_nightly_date=$(TZ=':Asia/Taipei' date +%F)" >> $GITHUB_ENV
+          set +x
         shell: bash
       # Runs a set of commands using the runners shell
       - name: Force push `release` branch
