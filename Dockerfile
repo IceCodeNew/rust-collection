@@ -20,7 +20,7 @@ RUN LDFLAGS="-s" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && RUSTFLAGS="-C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static" cargo build --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022" --release --verbose \
+    && RUSTFLAGS="-C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static" cargo build --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https dns-over-h3 local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022" --release --verbose \
     && x86_64-w64-mingw32-strip -o "./sslocal.exe" ./target/x86_64-pc-windows-gnu/release/sslocal.exe \
     && x86_64-w64-mingw32-strip -o "./ssurl.exe" ./target/x86_64-pc-windows-gnu/release/ssurl.exe \
     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-win-gnu-x64.zip" "./sslocal.exe" "./ssurl.exe"
@@ -28,14 +28,14 @@ RUN LDFLAGS="-s" \
 #     && source '/root/.bashrc' \
 #     && export LDFLAGS="-fuse-ld=lld -s" \
 #     && env \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static,-vfp2,-vfp3" cargo build --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022 local-redir local-tun" --release --verbose \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static,-vfp2,-vfp3" cargo build --bins -j "$(nproc)" --target armv7-unknown-linux-musleabi --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https dns-over-h3 local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022 local-redir local-tun" --release --verbose \
 #     && armv6-linux-musleabi-strip -o "./sslocal" ./target/armv7-unknown-linux-musleabi/release/sslocal \
 #     && armv6-linux-musleabi-strip -o "./ssurl" ./target/armv7-unknown-linux-musleabi/release/ssurl \
 #     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-arm-musleabi5-x32.tar.gz" "./sslocal" "./ssurl"
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https utility service local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022 local-redir local-tun mimalloc" --release --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=lld" cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https dns-over-h3 utility service local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022 local-redir local-tun mimalloc" --release --verbose \
     && strip -o "./ssurl" ./target/x86_64-unknown-linux-gnu/release/ssurl \
     && strip -o "./ssservice" ./target/x86_64-unknown-linux-gnu/release/ssservice \
     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz" "./ssurl" "./ssservice" \
