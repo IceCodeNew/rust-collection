@@ -20,10 +20,11 @@ RUN LDFLAGS="-s" \
     && CFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
-    && RUSTFLAGS="-C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static" cargo build --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https dns-over-h3 local utility local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022" --release --verbose \
+    && RUSTFLAGS="-C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static" cargo build --bins -j "$(nproc)" --target x86_64-pc-windows-gnu --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https dns-over-h3 local utility winservice local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022" --release --verbose \
     && x86_64-w64-mingw32-strip -o "./sslocal.exe" ./target/x86_64-pc-windows-gnu/release/sslocal.exe \
     && x86_64-w64-mingw32-strip -o "./ssurl.exe" ./target/x86_64-pc-windows-gnu/release/ssurl.exe \
-    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-win-gnu-x64.zip" "./sslocal.exe" "./ssurl.exe"
+    && x86_64-w64-mingw32-strip -o "./sswinservice.exe" ./target/x86_64-pc-windows-gnu/release/sswinservice.exe \
+    && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-win-gnu-x64.zip" "./sslocal.exe" "./ssurl.exe" "./sswinservice.exe"
 # RUN unset LDFLAGS CXXFLAGS CFLAGS \
 #     && source '/root/.bashrc' \
 #     && export LDFLAGS="-fuse-ld=lld -s" \
