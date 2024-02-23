@@ -91,7 +91,7 @@ jobs:
                 "${GITHUB_API_BASEURL}/repos/ogham/dog/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "qft_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                "${GITHUB_API_BASEURL}/repos/TudbuT/qft/commits?per_page=1&sha=nogui" |
+                "${GITHUB_API_BASEURL}/repos/TudbuT/qft/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "websocat_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 "${GITHUB_API_BASEURL}/repos/vi/websocat/commits?per_page=1" |

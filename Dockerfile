@@ -85,11 +85,11 @@ RUN source '/root/.bashrc' \
 
 FROM quay.io/icecodenew/rust-collection:build_base_debian AS qft
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/TudbuT/qft/commits?per_page=1&sha=nogui
+# https://api.github.com/repos/TudbuT/qft/commits?per_page=1
 ARG qft_latest_commit_hash='198fdc54755a61edcc4712c63fb7b0b2423273e8'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/TudbuT/qft.git' --branch 'nogui' --verbose \
+    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static -C link-arg=-fuse-ld=lld" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --git 'https://github.com/TudbuT/qft.git' --verbose \
     && strip ./qft \
     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
