@@ -14,10 +14,11 @@ ENV rust_nightly_date='2020-11-26' \
 # ENV CROSS_DOCKER_IN_DOCKER=true
 # ENV CROSS_CONTAINER_ENGINE=podman
 RUN apk update; apk --no-progress --no-cache add \
-    apk-tools bash binutils build-base ca-certificates clang cmake coreutils curl dos2unix dpkg file gettext-tiny-dev grep libarchive-tools libedit-dev libedit-static lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl pkgconf samurai; \
+    apk-tools bash binutils build-base ca-certificates clang cmake coreutils curl dos2unix dpkg file gettext-tiny-dev grep libarchive-tools libedit-dev libedit-static lld mold musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl pkgconf samurai; \
     apk --no-progress --no-cache upgrade; \
     rm -rf /var/cache/apk/*; \
-    update-alternatives --install /usr/local/bin/ld ld /usr/bin/lld 100; \
+    update-alternatives --install /usr/local/bin/ld ld /usr/bin/lld 1; \
+    update-alternatives --install /usr/local/bin/ld ld /usr/bin/mold 100; \
     update-alternatives --auto ld; \
     curl -sSLR4q --retry 5 --retry-delay 10 --retry-max-time 60 --connect-timeout 60 -m 600 -o '/root/.bashrc' "https://raw.githubusercontent.com/IceCodeNew/myrc/${bashrc_latest_commit_hash}/.bashrc"; \
     unset -f curl; \
