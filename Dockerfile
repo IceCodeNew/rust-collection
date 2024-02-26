@@ -10,7 +10,7 @@ RUN source '/root/.bashrc' \
     && export LDFLAGS CXXFLAGS CFLAGS \
     && env \
     && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/shadowsocks/shadowsocks-rust.git' '/git/shadowsocks-rust' \
-    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static" mold -run cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging hickory-dns utility server manager multi-threaded aead-cipher-2022 mimalloc" --release --verbose \
+    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static -C link-arg=-fuse-ld=mold" cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging hickory-dns utility server manager multi-threaded aead-cipher-2022 mimalloc" --release --verbose \
     && strip -o "./ssurl" ./target/x86_64-unknown-linux-gnu/release/ssurl \
     && strip -o "./ssmanager" ./target/x86_64-unknown-linux-gnu/release/ssmanager \
     && strip -o "./ssserver" ./target/x86_64-unknown-linux-gnu/release/ssserver \
@@ -36,7 +36,7 @@ RUN LDFLAGS="-s" \
 RUN unset LDFLAGS CXXFLAGS CFLAGS \
     && source '/root/.bashrc' \
     && env \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https dns-over-h3 utility service local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022 local-redir local-tun mimalloc" --release --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo build --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --features "logging hickory-dns dns-over-tls dns-over-https dns-over-h3 utility service local-dns local-http local-tunnel local-socks4 multi-threaded aead-cipher-2022 local-redir local-tun mimalloc" --release --verbose \
     && strip -o "./ssurl" ./target/x86_64-unknown-linux-gnu/release/ssurl \
     && strip -o "./ssservice" ./target/x86_64-unknown-linux-gnu/release/ssservice \
     && bsdtar --no-xattrs -a -cf "/usr/local/cargo/bin/ss-rust-linux-gnu-x64.tar.xz" "./ssurl" "./ssservice" \
@@ -50,10 +50,10 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
 # RUN source '/root/.bashrc' \
 #     && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/cloudflare/cfnts.git' '/git/cfnts' \
 #     && cargo update --verbose || exit 1; \
-#     if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static,+aes,+ssse3" mold -run cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+#     if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static,+aes,+ssse3 -C link-arg=-fuse-ld=mold" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
 #     then git reset --hard "$cfnts_latest_commit_hash" \
 #     && echo "$ git reset --hard $shadowsocks_rust_latest_commit_hash" \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static,+aes,+ssse3" mold -run cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static,+aes,+ssse3 -C link-arg=-fuse-ld=mold" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
 #     fi; \
 #     strip -o "/usr/local/cargo/bin/cfnts" ./target/x86_64-unknown-linux-gnu/release/cfnts \
 #     && rm -rf '/git/cfnts' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls ./rust-analyzer" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-gdbgui" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
@@ -64,7 +64,7 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
 # ARG dog_latest_commit_hash='d2d22fd8a4ba79027b5e2013d4ded3743dad5262'
 # WORKDIR /usr/local/cargo/bin
 # RUN source '/root/.bashrc' \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/ogham/dog.git' dog --verbose \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/ogham/dog.git' dog --verbose \
 #     && strip ./dog \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
@@ -74,7 +74,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG qft_latest_commit_hash='198fdc54755a61edcc4712c63fb7b0b2423273e8'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --git 'https://github.com/TudbuT/qft.git' --verbose \
+    && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --git 'https://github.com/TudbuT/qft.git' --verbose \
     && strip ./qft \
     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
@@ -84,7 +84,7 @@ RUN source '/root/.bashrc' \
 # ARG websocat_latest_commit_hash='4a421b7181aa5ab0101be68041f7c9cc9bdb2569'
 # WORKDIR /usr/local/cargo/bin
 # RUN source '/root/.bashrc' \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --features=ssl --git 'https://github.com/vi/websocat.git' websocat --verbose \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --features=ssl --git 'https://github.com/vi/websocat.git' websocat --verbose \
 #     && strip ./websocat \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
@@ -94,7 +94,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG rsign2_latest_commit_hash='79e058b7c18bcd519f160b5391c240549a0f5fdc'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/jedisct1/rsign2.git' --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/jedisct1/rsign2.git' --verbose \
     && mv ./rsign ./rsign-stripped
 RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
@@ -112,7 +112,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG b3sum_latest_tag_name='0.3.7'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu b3sum --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu b3sum --verbose \
     && mv ./b3sum ./b3sum-stripped
 RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
@@ -132,10 +132,10 @@ WORKDIR /git/ripgrep
 RUN source '/root/.bashrc' \
     && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/BurntSushi/ripgrep.git' '/git/ripgrep' \
     && cargo update --verbose || exit 1; \
-    if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
+    if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
     then git reset --hard "$ripgrep_latest_commit_hash" \
     && echo "$ git reset --hard $ripgrep_latest_commit_hash" \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --features 'pcre2' --release --verbose; \
     fi; \
     strip -o "/usr/local/cargo/bin/rg" ./target/x86_64-unknown-linux-gnu/release/rg \
     && "/usr/local/cargo/bin/rg" --pcre2-version \
@@ -149,10 +149,10 @@ RUN source '/root/.bashrc' \
 # RUN source '/root/.bashrc' \
 #     && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/uutils/coreutils.git' '/git/coreutils' \
 #     && cargo update --verbose || exit 1; \
-#     if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+#     if ! RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
 #     then git reset --hard "$coreutils_latest_commit_hash" \
 #     && echo "$ git reset --hard $shadowsocks_rust_latest_commit_hash" \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo build -j "$(nproc)" --bins --target x86_64-unknown-linux-gnu --release --verbose; \
 #     fi; \
 #     strip -o "/usr/local/cargo/bin/coreutils" ./target/x86_64-unknown-linux-gnu/release/coreutils \
 #     && rm -rf '/git/coreutils' "/usr/local/cargo/bin/cargo" "/usr/local/cargo/bin/cargo-clippy" "/usr/local/cargo/bin/cargo-deb" "/usr/local/cargo/bin/cargo-audit" "/usr/local/cargo/bin/cargo-fmt" "/usr/local/cargo/bin/cargo-miri" "/usr/local/cargo/bin/clippy-driver" "/usr/local/cargo/bin/rls ./rust-analyzer" "/usr/local/cargo/bin/rust-gdb" "/usr/local/cargo/bin/rust-gdbgui" "/usr/local/cargo/bin/rust-lldb" "/usr/local/cargo/bin/rustc" "/usr/local/cargo/bin/rustdoc" "/usr/local/cargo/bin/rustfmt" "/usr/local/cargo/bin/rustup" "/usr/local/cargo/git" "/usr/local/cargo/registry"
@@ -163,7 +163,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG sd_latest_commit_hash='ab6827df4e5006d017d1a08524e3183a3708bd6e'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/chmln/sd.git' --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/chmln/sd.git' --verbose \
     && mv ./sd ./sd-stripped
 RUN LDFLAGS="-s" \
     && CXXFLAGS="-O3 -pipe -fexceptions -g0 -grecord-gcc-switches" \
@@ -181,7 +181,7 @@ RUN LDFLAGS="-s" \
 # ARG fd_latest_tag_name='v8.1.1'
 # WORKDIR /usr/local/cargo/bin
 # RUN source '/root/.bashrc' \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl fd-find --verbose \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl fd-find --verbose \
 #     && strip ./fd \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
@@ -191,7 +191,7 @@ RUN LDFLAGS="-s" \
 # ARG bat_latest_tag_name='v0.16.0'
 # WORKDIR /usr/local/cargo/bin
 # RUN source '/root/.bashrc' \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --locked bat --verbose \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl --locked bat --verbose \
 #     && strip ./bat \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
@@ -201,7 +201,7 @@ RUN LDFLAGS="-s" \
 # ARG hexyl_latest_tag_name='v0.8.0'
 # WORKDIR /usr/local/cargo/bin
 # RUN source '/root/.bashrc' \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hexyl --verbose \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hexyl --verbose \
 #     && strip ./hexyl \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
@@ -211,7 +211,7 @@ RUN LDFLAGS="-s" \
 # ARG hyperfine_latest_tag_name='v1.11.0'
 # WORKDIR /usr/local/cargo/bin
 # RUN source '/root/.bashrc' \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hyperfine --verbose \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl hyperfine --verbose \
 #     && strip ./hyperfine \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
@@ -221,7 +221,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG checksec_rs_latest_tag_name='v0.0.8'
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
-    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl checksec --verbose \
+    && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl checksec --verbose \
     && strip ./checksec \
     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
@@ -231,7 +231,7 @@ RUN source '/root/.bashrc' \
 # ARG desed_latest_tag_name='v1.2.0'
 # WORKDIR /usr/local/cargo/bin
 # RUN source '/root/.bashrc' \
-#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2" mold -run cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl desed --verbose \
+#     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl desed --verbose \
 #     && strip ./desed \
 #     && rm -rf ./cargo ./cargo-clippy ./cargo-deb ./cargo-audit ./cargo-fmt ./cargo-miri ./clippy-driver ./rls ./rust-analyzer ./rust-gdb ./rust-gdbgui ./rust-lldb ./rustc ./rustdoc ./rustfmt ./rustup "/usr/local/cargo/git" "/usr/local/cargo/registry"
 
