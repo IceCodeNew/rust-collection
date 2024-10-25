@@ -1,7 +1,7 @@
 FROM quay.io/icecodenew/rust-collection:build_base_debian AS shadowsocks-rust
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/shadowsocks-rust/commits?per_page=1
-ARG shadowsocks_rust_latest_commit_hash='5d42ac9371e665b905161b5683ddfd3c8a208dd8'
+ARG shadowsocks_rust_latest_commit_hash=a03006a753486e64717d6e3afa91e0c6d043c557
 WORKDIR /git/shadowsocks-rust
 RUN source '/root/.bashrc' \
     && LDFLAGS="-s" \
@@ -71,7 +71,7 @@ RUN unset LDFLAGS CXXFLAGS CFLAGS \
 FROM quay.io/icecodenew/rust-collection:build_base_debian AS qft
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/TudbuT/qft/commits?per_page=1
-ARG qft_latest_commit_hash='198fdc54755a61edcc4712c63fb7b0b2423273e8'
+ARG qft_latest_commit_hash=578fdb0c1b4195cd95b5d321f5b314688e46f023
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=static -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=+crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --no-default-features --git 'https://github.com/TudbuT/qft.git' --verbose \
@@ -91,7 +91,7 @@ RUN source '/root/.bashrc' \
 FROM quay.io/icecodenew/rust-collection:build_base_debian AS rsign2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jedisct1/rsign2/commits?per_page=1
-ARG rsign2_latest_commit_hash='79e058b7c18bcd519f160b5391c240549a0f5fdc'
+ARG rsign2_latest_commit_hash=bd5c3f2c1077034f96333da2c6cfe84a588a0029
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/jedisct1/rsign2.git' --verbose \
@@ -109,7 +109,7 @@ RUN LDFLAGS="-s" \
 FROM quay.io/icecodenew/rust-collection:build_base_debian AS b3sum
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BLAKE3-team/BLAKE3/releases/latest
-ARG b3sum_latest_tag_name='0.3.7'
+ARG b3sum_latest_tag_name=1.5.4
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu b3sum --verbose \
@@ -127,7 +127,7 @@ RUN LDFLAGS="-s" \
 FROM quay.io/icecodenew/rust-collection:build_base_debian AS ripgrep
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/BurntSushi/ripgrep/commits?per_page=1
-ARG ripgrep_latest_commit_hash='c5ea5a13df8de5b7823e5ecad00bad1c4c4c854d'
+ARG ripgrep_latest_commit_hash=79cbe89deb1151e703f4d91b19af9cdcc128b765
 WORKDIR /git/ripgrep
 RUN source '/root/.bashrc' \
     && git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch 'https://github.com/BurntSushi/ripgrep.git' '/git/ripgrep' \
@@ -160,7 +160,7 @@ RUN source '/root/.bashrc' \
 FROM quay.io/icecodenew/rust-collection:build_base_debian AS sd
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/chmln/sd/commits?per_page=1
-ARG sd_latest_commit_hash='ab6827df4e5006d017d1a08524e3183a3708bd6e'
+ARG sd_latest_commit_hash=3dc437add84f07b63c44ba1c92fd6866c5c9d3e9
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C target-feature=-crt-static -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-gnu --git 'https://github.com/chmln/sd.git' --verbose \
@@ -218,7 +218,7 @@ RUN LDFLAGS="-s" \
 FROM quay.io/icecodenew/rust-collection:build_base_alpine AS checksec
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/etke/checksec.rs/releases/latest
-ARG checksec_rs_latest_tag_name='v0.0.8'
+ARG checksec_rs_latest_tag_name=v0.0.9
 WORKDIR /usr/local/cargo/bin
 RUN source '/root/.bashrc' \
     && RUSTFLAGS="-C relocation-model=pic -C prefer-dynamic=off -C target-cpu=x86-64-v2 -C link-arg=-fuse-ld=mold" cargo install --bins -j "$(nproc)" --target x86_64-unknown-linux-musl checksec --verbose \
