@@ -5,8 +5,8 @@ ARG checksec_sh_latest_tag_name='2.4.0'
 # https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc
 ARG bashrc_latest_commit_hash='dffed49d1d1472f1b22b3736a5c191d74213efaa'
 # https://api.github.com/repos/rust-lang/rust/releases/latest
-ENV rust_nightly_date='2020-11-26' \
-    RUST_VERSION='1.48.0' \
+ENV rust_nightly_date=2024-10-25 \
+    RUST_VERSION=1.82.0 \
     RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \

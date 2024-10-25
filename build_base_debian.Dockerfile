@@ -2,8 +2,8 @@ FROM quay.io/icecodenew/builder_image_x86_64-linux:debian AS rust-base
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG DEBIAN_FRONTEND=noninteractive
 # https://api.github.com/repos/rust-lang/rust/releases/latest
-ENV rust_nightly_date='2020-11-26' \
-    RUST_VERSION=1.48.0 \
+ENV rust_nightly_date=2024-10-25 \
+    RUST_VERSION=1.82.0 \
     RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH
